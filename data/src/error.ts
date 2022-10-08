@@ -24,6 +24,7 @@ export const createErrorObject = (
 // With error:
 // Error: Cannot find module '<base>/node_modules/io-ts/PathReporter' imported from <base>/src/api/data/io-ts/error.ts
 // No time right now to figure out how to solve this, and as that was the only place causing this, as a emergency patch, I duplicate functionality of PathReporter here.
+/* c8 ignore start */
 const failure = (errors: t.Errors) => errors.map(getMessage);
 const getMessage = (e: t.ValidationError) =>
   e.message !== undefined
@@ -46,3 +47,4 @@ const stringify = (v: unknown) => {
 const getContextPath = (context: t.Context) => {
   return context.map(({ key, type }) => `${key}: ${type.name}`).join("/");
 };
+/* c8 ignore stop */

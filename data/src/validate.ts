@@ -32,10 +32,17 @@ export const plainValidatorEncoder =
             _tag: "Left",
             left: [
               {
+                context: [
+                  {
+                    actual: input,
+                    key: "",
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    type: validation as t.Type<any>,
+                  },
+                ],
                 value: input,
                 message:
                   "Given value for input was not what the validator needed.",
-                context: [],
               },
             ],
           },

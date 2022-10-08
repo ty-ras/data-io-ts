@@ -11,4 +11,4 @@ export type {
 export * from "./error";
 export * from "./validate";
 export * from "./utils";
-export * from "./string";
+export * from "./pipe";
