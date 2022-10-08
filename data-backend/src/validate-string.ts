@@ -1,7 +1,7 @@
 import * as data from "@ty-ras/data";
 import * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
-import type * as h from "./header-parameters";
+import * as stringDecoder from "./string-decoder";
 
 export const urlParameters = <
   TValidation extends Record<string, URLParameterInfo<unknown>>,
@@ -13,10 +13,7 @@ export const urlParameters = <
 > => ({
   validators: data.transformEntries(validation, (info) =>
     common.plainValidator("regExp" in info ? info.decoder : info),
-  ) as dataBE.URLParameterValidatorSpec<
-    GetURLData<TValidation>,
-    never
-  >["validators"],
+  ) as dataBE.URLParameterValidators<GetURLData<TValidation>>,
   metadata: data.transformEntries(validation, (info) => ({
     decoder:
       "regExp" in info
@@ -27,47 +24,12 @@ export const urlParameters = <
   })),
 });
 
-export const queryValidator = <
-  TValidation extends Record<string, common.Decoder<unknown>>,
->(
+export const queryValidator = <TValidation extends stringDecoder.TDecoderBase>(
   validation: TValidation,
 ): dataBE.QueryValidatorSpec<
-  h.GetHeaderData<TValidation>,
+  stringDecoder.GetDecoderData<TValidation>,
   common.Decoder<unknown>
-> => {
-  const finalValidators = data.transformEntries(
-    validation,
-    (singleValidation) => {
-      const isRequired = singleValidation.decode(undefined)._tag === "Left";
-      return {
-        required: isRequired,
-        decoder: singleValidation,
-      };
-    },
-  );
-
-  return {
-    validators: data.transformEntries(
-      finalValidators,
-      ({ required, decoder }, headerNameParam) => {
-        const headerName = headerNameParam as string;
-        const plainValidator = common.plainValidator(decoder);
-        return required
-          ? (hdr) =>
-              hdr === undefined
-                ? data.exceptionAsValidationError(
-                    `Header "${headerName}" is mandatory.`,
-                  )
-                : plainValidator(hdr)
-          : plainValidator;
-      },
-    ) as dataBE.QueryValidatorSpec<
-      h.GetHeaderData<TValidation>,
-      never
-    >["validators"],
-    metadata: finalValidators,
-  };
-};
+> => stringDecoder.stringDecoder(validation, "Query");
 
 export type URLParameterInfo<TValue> =
   | common.Decoder<TValue>
