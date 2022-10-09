@@ -1,8 +1,8 @@
 import * as data from "@ty-ras/data";
 import type * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
-import * as stringDecoder from "./string-decoder";
-import * as stringEncoder from "./string-encoder";
+import * as stringDecoder from "./string-decoder-generic";
+import * as stringEncoder from "./string-encoder-generic";
 
 export const headersValidator = <
   TValidation extends stringDecoder.TDecoderBase,

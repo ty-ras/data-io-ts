@@ -1,7 +1,7 @@
 import * as data from "@ty-ras/data";
 import * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
-import * as stringDecoder from "./string-decoder";
+import * as stringDecoder from "./string-decoder-generic";
 
 export const urlParameters = <
   TValidation extends Record<string, URLParameterInfo<unknown>>,

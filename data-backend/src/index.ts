@@ -10,8 +10,8 @@ export type {
   MakeSpecWithBody,
   MakeSpecWithoutBody,
 } from "./protocol";
-export * from "./string-decoder";
-export * from "./string-encoder";
+export * from "./string-decoder-generic";
+export * from "./string-encoder-generic";
 export * from "./validate-body";
 export * from "./validate-string";
 export * from "./header-parameters";

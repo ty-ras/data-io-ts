@@ -3,6 +3,8 @@ import * as data from "@ty-ras/data";
 import type * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
 
+// TODO: At least parts of these can be put to @ty-ras/data-backend library
+// Everything can be moved there once HKT for decoders and encoders are created.
 export const stringEncoder = <TValidation extends TEncoderBase>(
   validation: TValidation,
   itemName: string,
