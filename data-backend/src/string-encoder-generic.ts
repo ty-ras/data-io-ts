@@ -17,15 +17,8 @@ export const stringEncoder = <TValidation extends TEncoderBase>(
   const finalValidators = data.transformEntries(
     validation,
     (singleValidation) => {
-      let isRequired = true;
-      try {
-        singleValidation.encode(undefined);
-        isRequired = false;
-      } catch {
-        // Ignore
-      }
       return {
-        required: isRequired,
+        required: !singleValidation.is(undefined),
         encoder: singleValidation,
       };
     },

@@ -27,7 +27,7 @@ export const outputValidator = <TOutput, TSerialized>(
 > =>
   body.outputValidator(
     validation,
-    (data) => ({ error: "none", data: validation.encode(data) }),
+    common.plainValidatorEncoder(validation),
     CONTENT_TYPE,
   );
 
