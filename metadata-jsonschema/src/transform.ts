@@ -11,7 +11,7 @@ export const transformToJSONSchema = (
 ): common.JSONSchema =>
   transformToJSONSchemaImpl(true, validation, override, fallbackValue);
 
-export const transformToJSONSchemaImpl = (
+const transformToJSONSchemaImpl = (
   topLevel: boolean,
   ...[validation, override, fallbackValue]: Parameters<
     typeof transformToJSONSchema
@@ -25,7 +25,10 @@ export const transformToJSONSchemaImpl = (
       const allTypes = validation as AllTypes;
       retVal = transformTagged(recursion, allTypes, topLevel);
       if (retVal && typeof retVal !== "boolean" && !retVal.description) {
-        retVal.description = allTypes.name;
+        const name = allTypes.name;
+        if (name !== undefined) {
+          retVal.description = name;
+        }
       }
     } else {
       retVal = transformFromIOTypes(validation);
