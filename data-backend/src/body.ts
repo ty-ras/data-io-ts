@@ -6,12 +6,12 @@ import * as body from "./body-generic";
 // We only support json things for io-ts validation.
 export const CONTENT_TYPE = "application/json" as const;
 
-export const inputValidator = <T>(
+export const requestBody = <T>(
   validation: common.Decoder<T>,
   strictContentType = false,
   opts?: rawbody.Options,
 ): dataBE.DataValidatorRequestInputSpec<T, InputValidatorSpec<T>> =>
-  body.inputValidator(
+  body.requestBody(
     validation,
     common.plainValidator(validation),
     CONTENT_TYPE,
@@ -19,13 +19,13 @@ export const inputValidator = <T>(
     opts,
   );
 
-export const outputValidator = <TOutput, TSerialized>(
+export const responseBody = <TOutput, TSerialized>(
   validation: common.Encoder<TOutput, TSerialized>,
 ): dataBE.DataValidatorResponseOutputSpec<
   TOutput,
   OutputValidatorSpec<TOutput, TSerialized>
 > =>
-  body.outputValidator(
+  body.responseBody(
     validation,
     common.plainValidatorEncoder(validation),
     CONTENT_TYPE,

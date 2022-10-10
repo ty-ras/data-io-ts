@@ -7,7 +7,7 @@ import type * as md from "@ty-ras/metadata";
 
 // Import plugin for IO-TS
 import type * as tPluginCommon from "@ty-ras/data-io-ts";
-import type * as body from "./validate-body";
+import type * as body from "./body";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

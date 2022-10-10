@@ -3,7 +3,7 @@ import * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
 import * as stringDecoder from "./string-decoder-generic";
 
-export const urlParameters = <
+export const url = <
   TValidation extends Record<string, URLParameterInfo<unknown>>,
 >(
   validation: TValidation,
@@ -24,12 +24,12 @@ export const urlParameters = <
   })),
 });
 
-export const queryValidator = <TValidation extends stringDecoder.TDecoderBase>(
+export const query = <TValidation extends stringDecoder.TDecoderBase>(
   validation: TValidation,
 ): dataBE.QueryValidatorSpec<
   stringDecoder.GetDecoderData<TValidation>,
   common.Decoder<unknown>
-> => stringDecoder.stringDecoder(validation, "Query");
+> => stringDecoder.stringDecoder(validation, "Query parameter");
 
 export type URLParameterInfo<TValue> =
   | common.Decoder<TValue>

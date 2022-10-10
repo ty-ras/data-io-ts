@@ -3,7 +3,7 @@ import type * as dataBE from "@ty-ras/data-backend";
 import * as rawbody from "raw-body";
 
 // TODO move this to @ty-ras/data-backend
-export const inputValidator = <T, TContentType extends string, TValidator>(
+export const requestBody = <T, TContentType extends string, TValidator>(
   validatorNative: TValidator,
   validator: data.DataValidator<unknown, T>,
   supportedContentType: TContentType,
@@ -60,7 +60,7 @@ export const inputValidator = <T, TContentType extends string, TValidator>(
   };
 };
 
-export const outputValidator = <
+export const responseBody = <
   TOutput,
   TSerialized,
   TContentType extends string,

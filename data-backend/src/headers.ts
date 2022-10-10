@@ -4,18 +4,14 @@ import * as common from "@ty-ras/data-io-ts";
 import * as stringDecoder from "./string-decoder-generic";
 import * as stringEncoder from "./string-encoder-generic";
 
-export const headersValidator = <
-  TValidation extends stringDecoder.TDecoderBase,
->(
+export const headers = <TValidation extends stringDecoder.TDecoderBase>(
   validation: TValidation,
 ): dataBE.RequestHeaderDataValidatorSpec<
   stringDecoder.GetDecoderData<TValidation>,
   common.Decoder<unknown>
 > => stringDecoder.stringDecoder(validation, "Header");
 
-export const responseHeadersValidator = <
-  TValidation extends stringEncoder.TEncoderBase,
->(
+export const responseHeaders = <TValidation extends stringEncoder.TEncoderBase>(
   validation: TValidation,
 ): dataBE.ResponseHeaderDataValidatorSpec<
   stringEncoder.GetEncoderData<TValidation>,

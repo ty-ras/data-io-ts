@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import test from "ava";
-import * as spec from "../header-parameters";
+import * as spec from "../headers";
 import * as t from "io-ts";
 
-test("Test that headersValidator works", (c) => {
+test("Validate headers works", (c) => {
   c.plan(5);
   const headerParamValue = t.string;
-  const { validators, metadata } = spec.headersValidator({
+  const { validators, metadata } = spec.headers({
     headerParam: headerParamValue,
   });
   c.deepEqual(metadata, {
@@ -40,10 +40,10 @@ test("Test that headersValidator works", (c) => {
   });
 });
 
-test("Test that responseHeadersValidator works", (c) => {
+test("Validate responseHeaders works", (c) => {
   c.plan(5);
   const headerParamValue = t.string;
-  const { validators, metadata } = spec.responseHeadersValidator({
+  const { validators, metadata } = spec.responseHeaders({
     headerParam: headerParamValue,
   });
   c.deepEqual(metadata, {
@@ -73,5 +73,59 @@ test("Test that responseHeadersValidator works", (c) => {
         value: 123,
       },
     ],
+  });
+});
+
+test("Validate string decoding optionality detection", (c) => {
+  c.plan(3);
+  const headerType = t.string;
+  const optionalHeaderType = t.union([headerType, t.undefined]);
+  const { validators, metadata } = spec.headers({
+    requiredHeader: headerType,
+    optionalHeader: optionalHeaderType,
+  });
+  c.deepEqual(metadata, {
+    requiredHeader: {
+      decoder: headerType,
+      required: true,
+    },
+    optionalHeader: {
+      decoder: optionalHeaderType,
+      required: false,
+    },
+  });
+  c.deepEqual(validators.optionalHeader(undefined), {
+    error: "none",
+    data: undefined,
+  });
+  c.like(validators.requiredHeader(undefined), {
+    error: "error",
+  });
+});
+
+test("Validate string encoding optionality detection", (c) => {
+  c.plan(3);
+  const headerType = t.string;
+  const optionalHeaderType = t.union([headerType, t.undefined]);
+  const { validators, metadata } = spec.responseHeaders({
+    requiredHeader: headerType,
+    optionalHeader: optionalHeaderType,
+  });
+  c.deepEqual(metadata, {
+    requiredHeader: {
+      encoder: headerType,
+      required: true,
+    },
+    optionalHeader: {
+      encoder: optionalHeaderType,
+      required: false,
+    },
+  });
+  c.deepEqual(validators.optionalHeader(undefined), {
+    error: "none",
+    data: undefined,
+  });
+  c.like(validators.requiredHeader(undefined as any), {
+    error: "error",
   });
 });
