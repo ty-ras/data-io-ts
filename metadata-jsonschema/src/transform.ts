@@ -8,17 +8,34 @@ export const transformToJSONSchema = (
   validation: types.Encoder | types.Decoder,
   override: types.Override | undefined,
   fallbackValue: types.FallbackValue,
-): common.JSONSchema =>
-  transformToJSONSchemaImpl(true, validation, override, fallbackValue);
+): common.JSONSchema => {
+  const recursion: Recursion = (
+    innerValidation: types.Encoder | types.Decoder,
+  ) =>
+    transformToJSONSchemaImpl(
+      false,
+      recursion,
+      innerValidation,
+      override,
+      fallbackValue,
+    );
+
+  return transformToJSONSchemaImpl(
+    true,
+    recursion,
+    validation,
+    override,
+    fallbackValue,
+  );
+};
 
 const transformToJSONSchemaImpl = (
   topLevel: boolean,
+  recursion: Recursion,
   ...[validation, override, fallbackValue]: Parameters<
     typeof transformToJSONSchema
   >
 ): common.JSONSchema => {
-  const recursion = (innerValidation: types.Encoder | types.Decoder) =>
-    transformToJSONSchemaImpl(false, innerValidation, override, fallbackValue);
   let retVal = override?.(validation);
   if (retVal === undefined) {
     if ("_tag" in validation) {
@@ -75,7 +92,6 @@ const transformTagged = (
       return compactConsts(type.keys);
     case "RefinementType":
     case "ReadonlyType":
-    case "ReadonlyArrayType":
       return recursion(type.type);
     // TODO: use ref here
     // case "RecursiveType":
@@ -84,6 +100,7 @@ const transformTagged = (
     //   }
     //   break;
     case "ArrayType":
+    case "ReadonlyArrayType":
       return makeTypedSchema("array", {
         items: recursion(type.type),
       });
@@ -116,6 +133,8 @@ const transformTagged = (
       return common.tryToCompressUnionOfMaybeEnums(retVal);
     }
     case "IntersectionType":
+      // TODO: optimize intersection of type + partial into one definition
+      // TODO: we probably need to call flattenDeepStructures here too?
       return {
         allOf: type.types.map(recursion),
       };
@@ -233,7 +252,7 @@ const makeObjectWithPropertiesSchema = (
 
 const compactConsts = (
   keysObject: Record<string, unknown>,
-): JSONSchemaObject | undefined => {
+): common.JSONSchema | undefined => {
   const keys = Object.keys(keysObject);
   return keys.length === 1
     ? {
@@ -243,7 +262,7 @@ const compactConsts = (
     ? {
         enum: keys,
       }
-    : undefined;
+    : false;
 };
 
 const tryTransformTopLevelSchema = (
