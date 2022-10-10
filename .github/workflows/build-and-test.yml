@@ -30,7 +30,7 @@ jobs:
   build_and_test:
     strategy:
       matrix:
-        dir: [ data ]
+        dir: [ data, data-backend ]
     runs-on: ubuntu-latest
     name: Build and test ${{ matrix.dir }}
     steps:
