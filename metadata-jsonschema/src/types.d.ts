@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type * as data from "@ty-ras/data-io-ts";
 import type * as jsonSchema from "@ty-ras/metadata-jsonschema";
 

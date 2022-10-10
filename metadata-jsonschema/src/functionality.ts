@@ -1,7 +1,7 @@
 import * as common from "@ty-ras/metadata-jsonschema";
 import * as t from "io-ts";
 import type * as types from "./types";
-import * as convert from "./convert";
+import * as convert from "./transform";
 
 export const createJsonSchemaFunctionality = <
   TTransformedSchema,
@@ -16,21 +16,19 @@ export const createJsonSchemaFunctionality = <
     ...args,
     stringDecoder: {
       transform: (decoder: types.Decoder) =>
-        convert.validationToSchema(
+        convert.transformToJSONSchema(
           decoder,
           override,
           fallbackValue ?? common.getDefaultFallbackValue(),
-          true,
         ),
       override,
     },
     stringEncoder: {
       transform: (encoder: types.Encoder) =>
-        convert.validationToSchema(
+        convert.transformToJSONSchema(
           encoder,
           override,
           fallbackValue ?? common.getDefaultFallbackValue(),
-          true,
         ),
       override,
     },
@@ -38,11 +36,10 @@ export const createJsonSchemaFunctionality = <
       contentTypes,
       (): common.SchemaTransformation<types.Encoder> => ({
         transform: (validation) =>
-          convert.validationToSchema(
+          convert.transformToJSONSchema(
             validation,
             override,
             fallbackValue ?? common.getDefaultFallbackValue(),
-            true,
           ),
         override,
       }),
@@ -51,11 +48,10 @@ export const createJsonSchemaFunctionality = <
       contentTypes,
       (): common.SchemaTransformation<types.Decoder> => ({
         transform: (validation) =>
-          convert.validationToSchema(
+          convert.transformToJSONSchema(
             validation,
             override,
             fallbackValue ?? common.getDefaultFallbackValue(),
-            true,
           ),
         override,
       }),
@@ -77,9 +73,4 @@ export type Input<
 const getUndefinedPossibility = (
   validation: types.Encoder | types.Decoder,
 ): common.UndefinedPossibility =>
-  validation instanceof t.UndefinedType ||
-  ((validation instanceof t.IntersectionType ||
-    validation instanceof t.UnionType) &&
-    (
-      validation as t.IntersectionType<Array<t.Any>> | t.UnionType<Array<t.Any>>
-    ).types.some(getUndefinedPossibility));
+  validation instanceof t.Type && validation.is(undefined);
