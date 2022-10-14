@@ -10,7 +10,7 @@ export const stringDecoder = <TValidation extends TDecoderBase>(
 ): dataBE.StringDataValidatorSpec<
   GetDecoderData<TValidation>,
   { decoder: common.Decoder<unknown> },
-  data.HeaderValue,
+  data.ReadonlyStringValue,
   { required: boolean }
 > => {
   const finalValidators = data.transformEntries(
@@ -41,7 +41,7 @@ export const stringDecoder = <TValidation extends TDecoderBase>(
       },
     ) as dataBE.StringDataValidators<
       GetDecoderData<TValidation>,
-      data.HeaderValue,
+      data.ReadonlyStringValue,
       true
     >,
     metadata: finalValidators,

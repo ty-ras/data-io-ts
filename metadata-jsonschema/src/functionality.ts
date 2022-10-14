@@ -15,29 +15,32 @@ export const createJsonSchemaFunctionality = <
   common.createJsonSchemaFunctionality({
     ...args,
     stringDecoder: {
-      transform: (decoder: types.Decoder) =>
+      transform: (decoder: types.Decoder, cutOffTopLevelUndefined) =>
         convert.transformToJSONSchema(
           decoder,
+          cutOffTopLevelUndefined,
           override,
           fallbackValue ?? common.getDefaultFallbackValue(),
         ),
       override,
     },
     stringEncoder: {
-      transform: (encoder: types.Encoder) =>
+      transform: (encoder: types.Encoder, cutOffTopLevelUndefined) =>
         convert.transformToJSONSchema(
           encoder,
+          cutOffTopLevelUndefined,
           override,
           fallbackValue ?? common.getDefaultFallbackValue(),
         ),
       override,
     },
     encoders: common.arrayToRecord(
-      contentTypes,
+      [...contentTypes],
       (): common.SchemaTransformation<types.Encoder> => ({
-        transform: (validation) =>
+        transform: (validation, cutOffTopLevelUndefined) =>
           convert.transformToJSONSchema(
             validation,
+            cutOffTopLevelUndefined,
             override,
             fallbackValue ?? common.getDefaultFallbackValue(),
           ),
@@ -45,11 +48,12 @@ export const createJsonSchemaFunctionality = <
       }),
     ),
     decoders: common.arrayToRecord(
-      contentTypes,
+      [...contentTypes],
       (): common.SchemaTransformation<types.Decoder> => ({
-        transform: (validation) =>
+        transform: (validation, cutOffTopLevelUndefined) =>
           convert.transformToJSONSchema(
             validation,
+            cutOffTopLevelUndefined,
             override,
             fallbackValue ?? common.getDefaultFallbackValue(),
           ),

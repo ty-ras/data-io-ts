@@ -209,6 +209,7 @@ test("Validate that transformToJSONSchema works with override and/or fallback ca
   c.deepEqual(
     spec.transformToJSONSchema(
       t.string,
+      true,
       () => overrideValue,
       () => undefined,
     ),
@@ -216,11 +217,16 @@ test("Validate that transformToJSONSchema works with override and/or fallback ca
   );
   const fallbackValue: common.JSONSchema = false;
   c.deepEqual(
-    spec.transformToJSONSchema(t.unknown, undefined, () => fallbackValue),
+    spec.transformToJSONSchema(t.unknown, true, undefined, () => fallbackValue),
     fallbackValue,
   );
   c.deepEqual(
-    spec.transformToJSONSchema(t.string, () => overrideValue, fallbackValue),
+    spec.transformToJSONSchema(
+      t.string,
+      true,
+      () => overrideValue,
+      fallbackValue,
+    ),
     overrideValue,
   );
 });
@@ -264,4 +270,4 @@ const simpleTransformToJSONSchema = (
   });
 
 const rawTransformToJSONSchema = (validation: types.Decoder | types.Encoder) =>
-  spec.transformToJSONSchema(validation, undefined, () => undefined);
+  spec.transformToJSONSchema(validation, true, undefined, () => undefined);
