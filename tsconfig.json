@@ -1,3 +1,4 @@
+// Base TS config file for all other TS configs in repo.
 {
   "compilerOptions": {
     "module": "es2022",
@@ -11,8 +12,9 @@
     // Furthermore, because .js and .mjs files will reside in the same directory, there will be a little hassle on the mapping file names + their refs in source.
     "sourceMap": false,
     "strict": true,
-    "exactOptionalPropertyTypes": false,
-    // We export dist-ts folder separately, so no need to include declaration files to dist folder.
+    // The io-ts's ValidationError type is easier to use with exactOptionalPropertyTypes turned off.
+    // "exactOptionalPropertyTypes": true,
+    // We export whole src folder, so no need to include declaration files to dist folder.
     "declaration": false,
     "noErrorTruncation": true,
     "incremental": true,
