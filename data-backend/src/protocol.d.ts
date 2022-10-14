@@ -1,6 +1,6 @@
 // Import generic REST-related things
 import type * as ep from "@ty-ras/endpoint";
-import type * as spec from "@ty-ras/spec";
+import type * as spec from "@ty-ras/endpoint-spec";
 import type * as protocol from "@ty-ras/protocol";
 import type * as data from "@ty-ras/data";
 import type * as md from "@ty-ras/metadata";
@@ -17,6 +17,8 @@ export type HeaderEncoder = tPluginCommon.Encoder<any, data.HeaderValue>;
 export type EndpointSpec<
   TProtocolSpec extends protocol.ProtocolSpecCore<string, unknown>,
   TFunctionality extends (...args: any) => any,
+  TContext,
+  TStateInfo,
   TState,
   TMetadataProviders extends Record<
     string,
@@ -29,14 +31,25 @@ export type EndpointSpec<
   ? MakeSpecWithoutBody<
       TProtocolSpec,
       TFunctionality,
+      TContext,
+      TStateInfo,
       TState,
       TMetadataProviders
     >
   : TProtocolSpec extends protocol.ProtocolSpecRequestBody<unknown>
-  ? MakeSpecWithBody<TProtocolSpec, TFunctionality, TState, TMetadataProviders>
+  ? MakeSpecWithBody<
+      TProtocolSpec,
+      TFunctionality,
+      TContext,
+      TStateInfo,
+      TState,
+      TMetadataProviders
+    >
   : MakeSpecWithoutBody<
       TProtocolSpec,
       TFunctionality,
+      TContext,
+      TStateInfo,
       TState,
       TMetadataProviders
     >;
@@ -45,6 +58,8 @@ export type EndpointSpec<
 export type MakeSpecWithoutBody<
   TProtocolSpec extends protocol.ProtocolSpecCore<string, unknown>,
   TFunctionality extends (...args: any) => any,
+  TContext,
+  TStateInfo,
   TState,
   TMetadataProviders extends Record<
     string,
@@ -54,20 +69,9 @@ export type MakeSpecWithoutBody<
   infer TResponseHeaders
 >
   ? spec.BatchSpecificationWithoutBodyWithHeaders<
-      unknown,
+      TContext,
+      TStateInfo,
       TState,
-      {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
-        ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
-        : {}) &
-        (TProtocolSpec extends protocol.ProtocolSpecQuery<infer TQuery>
-          ? spec.EndpointHandlerArgsWithQuery<protocol.RuntimeOf<TQuery>>
-          : {}) &
-        (TProtocolSpec extends protocol.ProtocolSpecHeaderData<
-          infer THeaderData
-        >
-          ? spec.EndpointHandlerArgsWithHeaders<protocol.RuntimeOf<THeaderData>>
-          : {}),
-      TMetadataProviders,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
       body.OutputValidatorSpec<
@@ -75,11 +79,7 @@ export type MakeSpecWithoutBody<
         tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
       >,
       tPluginCommon.GetRuntime<TResponseHeaders>,
-      HeaderEncoder
-    >
-  : spec.BatchSpecificationWithoutBody<
-      unknown,
-      TState,
+      HeaderEncoder,
       {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
         ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
         : {}) &
@@ -91,13 +91,30 @@ export type MakeSpecWithoutBody<
         >
           ? spec.EndpointHandlerArgsWithHeaders<protocol.RuntimeOf<THeaderData>>
           : {}),
-      TMetadataProviders,
+      TMetadataProviders
+    >
+  : spec.BatchSpecificationWithoutBody<
+      TContext,
+      TStateInfo,
+      TState,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
       body.OutputValidatorSpec<
         ExtractReturnType<TFunctionality>,
         tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
-      >
+      >,
+      {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
+        ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
+        : {}) &
+        (TProtocolSpec extends protocol.ProtocolSpecQuery<infer TQuery>
+          ? spec.EndpointHandlerArgsWithQuery<protocol.RuntimeOf<TQuery>>
+          : {}) &
+        (TProtocolSpec extends protocol.ProtocolSpecHeaderData<
+          infer THeaderData
+        >
+          ? spec.EndpointHandlerArgsWithHeaders<protocol.RuntimeOf<THeaderData>>
+          : {}),
+      TMetadataProviders
     > & {
       [P in keyof spec.BatchSpecificationResponseHeaderArgs<
         never,
@@ -121,6 +138,8 @@ export type MakeSpecWithBody<
   TProtocolSpec extends protocol.ProtocolSpecCore<string, unknown> &
     protocol.ProtocolSpecRequestBody<unknown>,
   TFunctionality extends (...args: any) => any,
+  TContext,
+  TStateInfo,
   TState,
   TMetadataProviders extends Record<
     string,
@@ -130,20 +149,9 @@ export type MakeSpecWithBody<
   infer TResponseHeaders
 >
   ? spec.BatchSpecificationWithBodyWithHeaders<
-      unknown,
+      TContext,
+      TStateInfo,
       TState,
-      {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
-        ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
-        : {}) &
-        (TProtocolSpec extends protocol.ProtocolSpecQuery<infer TQuery>
-          ? spec.EndpointHandlerArgsWithQuery<protocol.RuntimeOf<TQuery>>
-          : {}) &
-        (TProtocolSpec extends protocol.ProtocolSpecHeaderData<
-          infer THeaderData
-        >
-          ? spec.EndpointHandlerArgsWithHeaders<protocol.RuntimeOf<THeaderData>>
-          : {}),
-      TMetadataProviders,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
       body.OutputValidatorSpec<
@@ -153,11 +161,7 @@ export type MakeSpecWithBody<
       tPluginCommon.GetRuntime<TResponseHeaders>,
       HeaderEncoder,
       protocol.RuntimeOf<TProtocolSpec["requestBody"]>,
-      body.InputValidatorSpec<protocol.RuntimeOf<TProtocolSpec["requestBody"]>>
-    >
-  : spec.BatchSpecificationWithBody<
-      unknown,
-      TState,
+      body.InputValidatorSpec<protocol.RuntimeOf<TProtocolSpec["requestBody"]>>,
       {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
         ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
         : {}) &
@@ -169,7 +173,12 @@ export type MakeSpecWithBody<
         >
           ? spec.EndpointHandlerArgsWithHeaders<protocol.RuntimeOf<THeaderData>>
           : {}),
-      TMetadataProviders,
+      TMetadataProviders
+    >
+  : spec.BatchSpecificationWithBody<
+      TContext,
+      TStateInfo,
+      TState,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
       body.OutputValidatorSpec<
@@ -177,7 +186,19 @@ export type MakeSpecWithBody<
         tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
       >,
       protocol.RuntimeOf<TProtocolSpec["requestBody"]>,
-      body.InputValidatorSpec<protocol.RuntimeOf<TProtocolSpec["requestBody"]>>
+      body.InputValidatorSpec<protocol.RuntimeOf<TProtocolSpec["requestBody"]>>,
+      {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
+        ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
+        : {}) &
+        (TProtocolSpec extends protocol.ProtocolSpecQuery<infer TQuery>
+          ? spec.EndpointHandlerArgsWithQuery<protocol.RuntimeOf<TQuery>>
+          : {}) &
+        (TProtocolSpec extends protocol.ProtocolSpecHeaderData<
+          infer THeaderData
+        >
+          ? spec.EndpointHandlerArgsWithHeaders<protocol.RuntimeOf<THeaderData>>
+          : {}),
+      TMetadataProviders
     > & {
       [P in keyof spec.BatchSpecificationResponseHeaderArgs<
         never,

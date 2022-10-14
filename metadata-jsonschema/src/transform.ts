@@ -6,6 +6,7 @@ import type * as types from "./types";
 
 export const transformToJSONSchema = (
   validation: types.Encoder | types.Decoder,
+  cutOffTopLevelUndefined: boolean,
   override: types.Override | undefined,
   fallbackValue: types.FallbackValue,
 ): common.JSONSchema => {
@@ -16,6 +17,7 @@ export const transformToJSONSchema = (
       false,
       recursion,
       innerValidation,
+      cutOffTopLevelUndefined,
       override,
       fallbackValue,
     );
@@ -24,6 +26,7 @@ export const transformToJSONSchema = (
     true,
     recursion,
     validation,
+    cutOffTopLevelUndefined,
     override,
     fallbackValue,
   );
@@ -32,11 +35,11 @@ export const transformToJSONSchema = (
 const transformToJSONSchemaImpl = (
   topLevel: boolean,
   recursion: Recursion,
-  ...[validation, override, fallbackValue]: Parameters<
+  ...[validation, cutOffTopLevelUndefined, override, fallbackValue]: Parameters<
     typeof transformToJSONSchema
   >
 ): common.JSONSchema => {
-  let retVal = override?.(validation);
+  let retVal = override?.(validation, cutOffTopLevelUndefined);
   if (retVal === undefined) {
     if ("_tag" in validation) {
       const allTypes = validation as AllTypes;
@@ -48,7 +51,7 @@ const transformToJSONSchemaImpl = (
         }
       }
     } else {
-      retVal = transformFromIOTypes(validation);
+      retVal = transformFromIOTypes(validation, cutOffTopLevelUndefined);
     }
   }
   return retVal ?? common.getFallbackValue(validation, fallbackValue);

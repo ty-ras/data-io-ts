@@ -1,7 +1,6 @@
-import type * as dataBE from "@ty-ras/data-backend";
+import * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
 import type * as rawbody from "raw-body";
-import * as body from "./body-generic";
 
 // We only support json things for io-ts validation.
 export const CONTENT_TYPE = "application/json" as const;
@@ -11,7 +10,7 @@ export const requestBody = <T>(
   strictContentType = false,
   opts?: rawbody.Options,
 ): dataBE.DataValidatorRequestInputSpec<T, InputValidatorSpec<T>> =>
-  body.requestBody(
+  dataBE.requestBody(
     validation,
     common.plainValidator(validation),
     CONTENT_TYPE,
@@ -25,7 +24,7 @@ export const responseBody = <TOutput, TSerialized>(
   TOutput,
   OutputValidatorSpec<TOutput, TSerialized>
 > =>
-  body.responseBody(
+  dataBE.responseBody(
     validation,
     common.plainValidatorEncoder(validation),
     CONTENT_TYPE,

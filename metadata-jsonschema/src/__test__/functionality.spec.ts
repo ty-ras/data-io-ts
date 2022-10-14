@@ -55,10 +55,10 @@ const testDecodersAndEncoders = (
 
   const stringInput = t.string;
   const expectedString = override ?? stringSchema;
-  c.deepEqual(stringDecoder(stringInput), expectedString);
-  c.deepEqual(stringEncoder(stringInput), expectedString);
-  c.deepEqual(decoder(stringInput), expectedString);
-  c.deepEqual(encoder(stringInput), expectedString);
+  c.deepEqual(stringDecoder(stringInput, true), expectedString);
+  c.deepEqual(stringEncoder(stringInput, true), expectedString);
+  c.deepEqual(decoder(stringInput, true), expectedString);
+  c.deepEqual(encoder(stringInput, true), expectedString);
   if (override !== undefined) {
     c.deepEqual(seenOverrideArgs, [
       stringInput,
@@ -75,10 +75,10 @@ const testDecodersAndEncoders = (
   const unknownInput = t.unknown;
   const expectedUnknown =
     override ?? fallbackValue ?? common.getDefaultFallbackValue();
-  c.deepEqual(stringDecoder(unknownInput), expectedUnknown);
-  c.deepEqual(stringEncoder(unknownInput), expectedUnknown);
-  c.deepEqual(decoder(unknownInput), expectedUnknown);
-  c.deepEqual(encoder(unknownInput), expectedUnknown);
+  c.deepEqual(stringDecoder(unknownInput, true), expectedUnknown);
+  c.deepEqual(stringEncoder(unknownInput, true), expectedUnknown);
+  c.deepEqual(decoder(unknownInput, true), expectedUnknown);
+  c.deepEqual(encoder(unknownInput, true), expectedUnknown);
   if (override !== undefined) {
     c.deepEqual(seenOverrideArgs, [
       unknownInput,
