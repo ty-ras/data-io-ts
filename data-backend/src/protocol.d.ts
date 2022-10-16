@@ -22,12 +22,9 @@ export type EndpointSpec<
   TState,
   TMetadataProviders extends Record<
     string,
-    md.MetadataBuilder<any, any, any, any, any, any, any>
+    md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
-  TEndpointCreationArgs,
-> = (
-  args: TEndpointCreationArgs,
-) => ep.HttpMethodWithoutBody extends TProtocolSpec["method"]
+> = ep.HttpMethodWithoutBody extends TProtocolSpec["method"]
   ? MakeSpecWithoutBody<
       TProtocolSpec,
       TFunctionality,
@@ -63,7 +60,7 @@ export type MakeSpecWithoutBody<
   TState,
   TMetadataProviders extends Record<
     string,
-    md.MetadataBuilder<any, any, any, any, any, any, any>
+    md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
 > = (TProtocolSpec extends protocol.ProtocolSpecResponseHeaders<
   infer TResponseHeaders
@@ -143,7 +140,7 @@ export type MakeSpecWithBody<
   TState,
   TMetadataProviders extends Record<
     string,
-    md.MetadataBuilder<any, any, any, any, any, any, any>
+    md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
 > = (TProtocolSpec extends protocol.ProtocolSpecResponseHeaders<
   infer TResponseHeaders
