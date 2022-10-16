@@ -370,10 +370,10 @@
   resolved "https://registry.yarnpkg.com/@ty-ras/data/-/data-0.11.1.tgz#23d4bb890273ebb917c384371dbc5f2e49bbcde5"
   integrity sha512-sq5Qutpt0S7Ab9clkWi44Jo8XSyDtWDV4ZvTqUUSQH5ef6VWKiXqB9Nw2uttrEaIHP32hDdl1VAbyD6sb3P/SQ==
 
-"@ty-ras/endpoint-spec@0.11.2":
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/@ty-ras/endpoint-spec/-/endpoint-spec-0.11.2.tgz#b6af7a634e64ef100dff02b2990b6a7e9a00a5bb"
-  integrity sha512-eydW2X1easdeZdemMCGlBEU+m8HWIhZSDb9hdUwTdbr7PPngXnevgipgEhXI5l0Ifw7BOA/J51WwgTCyhn9JoA==
+"@ty-ras/endpoint-spec@0.11.3":
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/@ty-ras/endpoint-spec/-/endpoint-spec-0.11.3.tgz#c5ad86acc2eead75264cc2faebe0c729e4f6b9b5"
+  integrity sha512-dyil7pSXk8S+p4VFr7dH7GW0e1OWJvvlm9sbcHgbomeLrxy1qiziKnbWUZbGzj44DZlANNOl96tdegC8AaJPFw==
   dependencies:
     "@ty-ras/endpoint" "0.11.4"
     "@ty-ras/metadata" "0.11.7"
