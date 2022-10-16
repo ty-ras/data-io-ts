@@ -1,6 +1,6 @@
 import * as dataBE from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
-import type * as rawbody from "raw-body";
+import * as rawbody from "raw-body";
 
 // We only support json things for io-ts validation.
 export const CONTENT_TYPE = "application/json" as const;
@@ -15,7 +15,15 @@ export const requestBody = <T>(
     common.plainValidator(validation),
     CONTENT_TYPE,
     strictContentType,
-    opts,
+    async (readable, encoding) => {
+      const bufferOrString = await rawbody.default(readable, {
+        encoding: opts?.encoding ?? encoding,
+        ...(opts ?? {}),
+      });
+      return bufferOrString instanceof Buffer
+        ? bufferOrString.toString()
+        : bufferOrString;
+    },
   );
 
 export const responseBody = <TOutput, TSerialized>(
