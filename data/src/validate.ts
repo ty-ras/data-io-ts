@@ -20,10 +20,11 @@ export const plainValidator =
 export const plainValidatorEncoder =
   <TOutput, TSerialized>(
     validation: Encoder<TOutput, TSerialized>,
+    contentIsAlreadyValidated: boolean,
   ): data.DataValidator<TOutput, TSerialized> =>
   (input) =>
     utils.transformLibraryResultToModelResult(
-      validation.is(input)
+      contentIsAlreadyValidated || validation.is(input)
         ? {
             _tag: "Right",
             right: validation.encode(input),
