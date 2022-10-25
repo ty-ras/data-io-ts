@@ -133,11 +133,13 @@ test("Validate responseBody works for assumption of validated data", (c) => {
       output: JSON.stringify("123"),
     },
   });
+  // Notice! Since we used ForValidatedData variant meaning that input data should be already validated, the `.is` is not invoked.
+  // This results in wrong output - but that means that caller broke contract that data should be already validated.
   c.like(validator(123 as any), {
     error: "none",
     data: {
       contentType: spec.CONTENT_TYPE,
-      output: JSON.stringify("123"),
+      output: JSON.stringify(123),
     },
   });
 });
