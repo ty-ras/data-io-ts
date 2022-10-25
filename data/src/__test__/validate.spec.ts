@@ -30,9 +30,9 @@ test("Validate plainValidator works", (c) => {
   });
 });
 
-test("Validate plainValidatorEncoder works", (c) => {
+test("Validate plainValidatorEncoder works for unvalidated data", (c) => {
   c.plan(2);
-  const encoder = spec.plainValidatorEncoder(pipe.stringToNumber);
+  const encoder = spec.plainValidatorEncoder(pipe.stringToNumber, false);
   c.deepEqual(encoder(123), {
     error: "none",
     data: "123",
@@ -52,5 +52,20 @@ test("Validate plainValidatorEncoder works", (c) => {
         value: "123",
       },
     ],
+  });
+});
+
+test("Validate plainValidatorEncoder works for validated data", (c) => {
+  c.plan(2);
+  const encoder = spec.plainValidatorEncoder(pipe.stringToNumber, true);
+  c.deepEqual(encoder(123), {
+    error: "none",
+    data: "123",
+  });
+  // Notice! Since we passed 'true' meaning that input data should be already validated, the `.is` is not invoked.
+  // This results in wrong output - but that means that caller broke contract that data should be already validated.
+  c.like(encoder("123" as any), {
+    error: "none",
+    data: "123",
   });
 });

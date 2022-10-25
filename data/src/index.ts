@@ -12,3 +12,4 @@ export * from "./error";
 export * from "./validate";
 export * from "./utils";
 export * from "./pipe";
+export * from "./instance-of";
