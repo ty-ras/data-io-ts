@@ -28,15 +28,23 @@ export const requestBody = <T>(
 
 export const responseBody = <TOutput, TSerialized>(
   validation: common.Encoder<TOutput, TSerialized>,
+  contentIsAlreadyValidated: boolean,
 ): dataBE.DataValidatorResponseOutputSpec<
   TOutput,
   OutputValidatorSpec<TOutput, TSerialized>
 > =>
   dataBE.responseBody(
     validation,
-    common.plainValidatorEncoder(validation),
+    common.plainValidatorEncoder(validation, contentIsAlreadyValidated),
     CONTENT_TYPE,
   );
+
+export const responseBodyForValidatedData = <TOutput, TSerialized>(
+  validation: common.Encoder<TOutput, TSerialized>,
+): dataBE.DataValidatorResponseOutputSpec<
+  TOutput,
+  OutputValidatorSpec<TOutput, TSerialized>
+> => responseBody(validation, true);
 
 export type InputValidatorSpec<TData> = {
   [CONTENT_TYPE]: common.Decoder<TData>;

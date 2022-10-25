@@ -29,7 +29,7 @@ export const stringEncoder = <TValidation extends TEncoderBase>(
       finalValidators,
       ({ required, encoder }, headerNameParam) => {
         const headerName = headerNameParam as string;
-        const plainValidator = common.plainValidatorEncoder(encoder);
+        const plainValidator = common.plainValidatorEncoder(encoder, false);
         return required
           ? (item) =>
               item === undefined
