@@ -57,7 +57,9 @@ test("Validate plainValidatorEncoder works for unvalidated data", (c) => {
 
 test("Validate plainValidatorEncoder works for validated data", (c) => {
   c.plan(2);
-  const encoder = spec.plainValidatorEncoder(pipe.stringToNumber, true);
+  const encoder = spec.plainValidatorEncoderForValidatedData(
+    pipe.stringToNumber,
+  );
   c.deepEqual(encoder(123), {
     error: "none",
     data: "123",

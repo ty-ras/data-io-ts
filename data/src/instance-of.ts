@@ -25,6 +25,6 @@ export const instanceOf = <T extends abstract new (...args: any) => any>(
 ) =>
   new InstanceOf<T>(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    `${name ?? `class ${ctor.prototype.constructor?.name ?? "<unnamed>"}`}`,
+    `${name ?? `class ${ctor.prototype?.constructor?.name ?? "<unnamed>"}`}`,
     ctor,
   );

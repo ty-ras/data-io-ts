@@ -48,3 +48,7 @@ export const plainValidatorEncoder =
             ],
           },
     );
+
+export const plainValidatorEncoderForValidatedData = <TOutput, TSerialized>(
+  validation: Encoder<TOutput, TSerialized>,
+) => plainValidatorEncoder(validation, true);
