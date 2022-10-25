@@ -350,10 +350,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@ty-ras/data@0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@ty-ras/data/-/data-0.12.1.tgz#db9fc6d6609f6b70d1d4b747f79225639ec5e870"
-  integrity sha512-g6EcrQ+GOD79zCqx4JeHUBt4Vw61n2Xz3Zsy4EXBtt+Yk6aN15pFf83t3eT3Tt1j2WBS9J0RfHziRgOryMHb5g==
+"@ty-ras/data@0.12.3":
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/@ty-ras/data/-/data-0.12.3.tgz#89f50dab7180906ba8aa7e8930c5a0ccea5f2132"
+  integrity sha512-MW0TNixdi4fbqWsJAtUNPSxvGVn8YhkX2Y9RAOd/HxlJ/nrRn1CQLU2qCis5Zky7Xkc519WPJTr7+tmUer1alA==
 
 "@ty-ras/protocol@0.12.0":
   version "0.12.0"
