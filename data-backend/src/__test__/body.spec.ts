@@ -85,7 +85,7 @@ test("Validate requestBody works", async (c) => {
 test("Validate responseBody works", (c) => {
   c.plan(3);
   const output = t.string;
-  const { validator, validatorSpec } = spec.responseBody(output);
+  const { validator, validatorSpec } = spec.responseBody(output, false);
   c.deepEqual(validatorSpec, {
     contents: {
       [spec.CONTENT_TYPE]: output,
@@ -113,6 +113,32 @@ test("Validate responseBody works", (c) => {
         value: 123,
       },
     ],
+  });
+});
+
+test("Validate responseBody works for assumption of validated data", (c) => {
+  c.plan(3);
+  const output = t.string;
+  const { validator, validatorSpec } =
+    spec.responseBodyForValidatedData(output);
+  c.deepEqual(validatorSpec, {
+    contents: {
+      [spec.CONTENT_TYPE]: output,
+    },
+  });
+  c.deepEqual(validator("123"), {
+    error: "none",
+    data: {
+      contentType: spec.CONTENT_TYPE,
+      output: JSON.stringify("123"),
+    },
+  });
+  c.like(validator(123 as any), {
+    error: "none",
+    data: {
+      contentType: spec.CONTENT_TYPE,
+      output: JSON.stringify("123"),
+    },
   });
 });
 
@@ -183,7 +209,7 @@ test("Validate response body detects invalid JSON", (c) => {
   const recursiveValidator = t.recursion<Recursive>("Recursive", (self) =>
     t.type({ a: self }),
   );
-  const { validator } = spec.responseBody(recursiveValidator);
+  const { validator } = spec.responseBody(recursiveValidator, false);
   const recursive: Recursive = {} as any;
   recursive.a = recursive;
   // We would expect error to be JSON.stringify complaining about recursiveness.
