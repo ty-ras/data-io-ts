@@ -9,11 +9,11 @@ export const toError = (error: SupportedErrors): Error =>
     ? error
     : new Error(errorFunctionality.getHumanReadableErrorMessage(error));
 
-export const throwIfError = <T>(obj: T | Error): T => {
+export const throwIfError = <T>(obj: T): Exclude<T, Error> => {
   if (obj instanceof Error) {
     throw obj;
   }
-  return obj;
+  return obj as Exclude<T, Error>;
 };
 
 export const throwOnError = (error: Error): never => {
