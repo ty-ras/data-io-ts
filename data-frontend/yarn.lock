@@ -350,18 +350,18 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@ty-ras/data-frontend@0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@ty-ras/data-frontend/-/data-frontend-0.12.1.tgz#756221b20ac8d847b5d3db687f4077e321b53166"
-  integrity sha512-Lsn9eeLGDM5GaRKDGrEjTSapFnl8lKxYZdah7Wpj8cwhoeOfyRMXVd0nbRXAdgqXP41vLhgcaurfMqAV8wrVTQ==
+"@ty-ras/data-frontend@0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@ty-ras/data-frontend/-/data-frontend-0.12.2.tgz#0fc155bbfcb4d5bee6d9c3efba24c0df9c16ae62"
+  integrity sha512-g5fLNhoqoJ4IB4nLSMhqm3coXPLJcsEi5zR3taEmyXusvKzh/nR7uI9OWOYUlntG7pxL/XlLtpSQ8LDs5ruD2Q==
   dependencies:
     "@ty-ras/data" "0.12.3"
     "@ty-ras/protocol" "0.12.0"
 
-"@ty-ras/data-io-ts@0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@ty-ras/data-io-ts/-/data-io-ts-0.12.1.tgz#addfce0cf436d48a6914b97c884a4d0f931f9fa2"
-  integrity sha512-1kxjvgbj8FHA5eiOZzdukQbco9gDSy3akXD08pm4sMUZXWF0vEFGe95rFm3dSIkWcFJOVclHE0vvTkoqL02BaQ==
+"@ty-ras/data-io-ts@0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@ty-ras/data-io-ts/-/data-io-ts-0.12.2.tgz#4362182f083f17971e789d004d5c967329c575cd"
+  integrity sha512-zwzAyRY2sHefejx7IjYXvB5k2vQwEyKB7sFF910+n17ptEetZLHrg318bi4Ze4y6b7QHZxytUtYhEyvGl4ds/Q==
   dependencies:
     "@ty-ras/data" "0.12.3"
     "@ty-ras/protocol" "0.12.0"
