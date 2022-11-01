@@ -358,10 +358,10 @@
     "@ty-ras/data" "0.12.3"
     "@ty-ras/protocol" "0.12.0"
 
-"@ty-ras/data-io-ts@0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@ty-ras/data-io-ts/-/data-io-ts-0.12.2.tgz#4362182f083f17971e789d004d5c967329c575cd"
-  integrity sha512-zwzAyRY2sHefejx7IjYXvB5k2vQwEyKB7sFF910+n17ptEetZLHrg318bi4Ze4y6b7QHZxytUtYhEyvGl4ds/Q==
+"@ty-ras/data-io-ts@0.12.3":
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/@ty-ras/data-io-ts/-/data-io-ts-0.12.3.tgz#3f3fa3cc65c498faf09ce281abfd9c4156211aac"
+  integrity sha512-jKRogdvVExnbDAEb7XCxLN0vE0YDh2t6oshrgfQ686H8tqwskce3uY2JG6HggLXSW8bY+ihyqFgFi7cY0QuCJQ==
   dependencies:
     "@ty-ras/data" "0.12.3"
     "@ty-ras/protocol" "0.12.0"
