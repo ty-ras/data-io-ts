@@ -71,7 +71,7 @@ export type Input<
   TContentTypes,
   types.AnyEncoder | types.AnyDecoder
 > & {
-  override?: common.Override<types.AnyEncoder | types.AnyDecoder>;
+  override?: common.OverrideGeneric<types.AnyEncoder | types.AnyDecoder>;
 };
 
 const getUndefinedPossibility = (
