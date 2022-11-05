@@ -56,8 +56,8 @@ export const getOrElseThrow = <T>(e: E.Either<SupportedErrors, T>): T =>
 
 export const readJSONStringToValueOrThrow =
   <TValidation extends t.Mixed>(
-    makeErrorIfNotString: (value: unknown) => Error,
     validation: TValidation,
+    makeErrorIfNotString: (value: unknown) => Error,
   ): ((maybeJsonString: unknown) => t.TypeOf<TValidation>) =>
   (maybeJsonString) =>
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return

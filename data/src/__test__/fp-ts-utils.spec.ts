@@ -90,8 +90,8 @@ test("Validate that readJSONStringToValueOrThrow works correctly", (c) => {
   c.plan(5);
   const ifNotString = new Error();
   const validator = spec.readJSONStringToValueOrThrow(
-    () => ifNotString,
     t.string,
+    () => ifNotString,
   );
   // When not non-empty string, custom callback gets invoked
   c.throws(() => validator(12), { is: ifNotString });
