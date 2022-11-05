@@ -10,7 +10,7 @@ export const requestBody = <T>(
   strictContentType = false,
   opts?: rawbody.Options,
 ): dataBE.DataValidatorRequestInputSpec<T, InputValidatorSpec<T>> =>
-  dataBE.requestBody(
+  dataBE.requestBodyGeneric(
     validation,
     common.plainValidator(validation),
     CONTENT_TYPE,
@@ -33,7 +33,7 @@ export const responseBody = <TOutput, TSerialized>(
   TOutput,
   OutputValidatorSpec<TOutput, TSerialized>
 > =>
-  dataBE.responseBody(
+  dataBE.responseBodyGeneric(
     validation,
     common.plainValidatorEncoder(validation, contentIsAlreadyValidated),
     CONTENT_TYPE,

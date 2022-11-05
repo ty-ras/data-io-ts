@@ -33,8 +33,8 @@ const testDecodersAndEncoders = (
     plan += 2;
   }
   c.plan(plan);
-  const seenOverrideArgs: Array<types.Encoder | types.Decoder> = [];
-  const seenFallbackArgs: Array<types.Encoder | types.Decoder> = [];
+  const seenOverrideArgs: Array<types.AnyEncoder | types.AnyDecoder> = [];
+  const seenFallbackArgs: Array<types.AnyEncoder | types.AnyDecoder> = [];
   const {
     stringDecoder,
     stringEncoder,

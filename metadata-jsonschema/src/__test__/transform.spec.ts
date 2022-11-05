@@ -260,7 +260,7 @@ test("Validate that transformToJSONSchema works with union of unions", (c) => {
 
 const simpleTransformToJSONSchema = (
   c: ExecutionContext,
-  validation: types.Decoder | types.Encoder,
+  validation: types.AnyDecoder | types.AnyEncoder,
   type: Exclude<common.JSONSchema, boolean>["type"],
   description?: string,
 ) =>
@@ -269,5 +269,6 @@ const simpleTransformToJSONSchema = (
     description: description ?? type,
   });
 
-const rawTransformToJSONSchema = (validation: types.Decoder | types.Encoder) =>
-  spec.transformToJSONSchema(validation, true, undefined, () => undefined);
+const rawTransformToJSONSchema = (
+  validation: types.AnyDecoder | types.AnyEncoder,
+) => spec.transformToJSONSchema(validation, true, undefined, () => undefined);
