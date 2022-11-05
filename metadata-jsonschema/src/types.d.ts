@@ -2,7 +2,7 @@
 import type * as data from "@ty-ras/data-io-ts";
 import type * as jsonSchema from "@ty-ras/metadata-jsonschema";
 
-export type Encoder = data.Encoder<any, any>;
-export type Decoder = data.Decoder<any>;
-export type FallbackValue = jsonSchema.FallbackValue<Encoder | Decoder>;
-export type Override = jsonSchema.Override<Encoder | Decoder>;
+export type AnyEncoder = data.Encoder<any, any>;
+export type AnyDecoder = data.Decoder<any>;
+export type FallbackValue = jsonSchema.FallbackValue<AnyEncoder | AnyDecoder>;
+export type Override = jsonSchema.Override<AnyEncoder | AnyDecoder>;

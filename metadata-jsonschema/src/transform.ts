@@ -5,13 +5,13 @@ import * as common from "@ty-ras/metadata-jsonschema";
 import type * as types from "./types";
 
 export const transformToJSONSchema = (
-  validation: types.Encoder | types.Decoder,
+  validation: types.AnyEncoder | types.AnyDecoder,
   cutOffTopLevelUndefined: boolean,
   override: types.Override | undefined,
   fallbackValue: types.FallbackValue,
 ): common.JSONSchema => {
   const recursion: Recursion = (
-    innerValidation: types.Encoder | types.Decoder,
+    innerValidation: types.AnyEncoder | types.AnyDecoder,
   ) =>
     transformToJSONSchemaImpl(
       false,
@@ -285,4 +285,6 @@ const tryTransformTopLevelSchema = (
     : undefined;
 };
 
-type Recursion = (item: types.Encoder | types.Decoder) => common.JSONSchema;
+type Recursion = (
+  item: types.AnyEncoder | types.AnyDecoder,
+) => common.JSONSchema;

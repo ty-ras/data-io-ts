@@ -8,7 +8,7 @@ export const urlParameter = <TName extends string, TDecoder extends t.Mixed>(
   name: TName,
   decoder: TDecoder,
   regExp?: RegExp,
-): spec.URLParameterSpec<TName, t.TypeOf<TDecoder>, TDecoder> => ({
+): spec.URLParameterInfo<TName, t.TypeOf<TDecoder>, TDecoder> => ({
   name,
   regExp: regExp ?? dataBE.defaultParameterRegExp(),
   decoder,

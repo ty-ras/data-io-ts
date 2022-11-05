@@ -12,10 +12,10 @@ export const createJsonSchemaFunctionality = <
   fallbackValue,
   ...args
 }: Input<TTransformedSchema, TContentTypes>) =>
-  common.createJsonSchemaFunctionality({
+  common.createJsonSchemaFunctionalityGeneric({
     ...args,
     stringDecoder: {
-      transform: (decoder: types.Decoder, cutOffTopLevelUndefined) =>
+      transform: (decoder: types.AnyDecoder, cutOffTopLevelUndefined) =>
         convert.transformToJSONSchema(
           decoder,
           cutOffTopLevelUndefined,
@@ -25,7 +25,7 @@ export const createJsonSchemaFunctionality = <
       override,
     },
     stringEncoder: {
-      transform: (encoder: types.Encoder, cutOffTopLevelUndefined) =>
+      transform: (encoder: types.AnyEncoder, cutOffTopLevelUndefined) =>
         convert.transformToJSONSchema(
           encoder,
           cutOffTopLevelUndefined,
@@ -36,7 +36,7 @@ export const createJsonSchemaFunctionality = <
     },
     encoders: common.arrayToRecord(
       [...contentTypes],
-      (): common.SchemaTransformation<types.Encoder> => ({
+      (): common.SchemaTransformation<types.AnyEncoder> => ({
         transform: (validation, cutOffTopLevelUndefined) =>
           convert.transformToJSONSchema(
             validation,
@@ -49,7 +49,7 @@ export const createJsonSchemaFunctionality = <
     ),
     decoders: common.arrayToRecord(
       [...contentTypes],
-      (): common.SchemaTransformation<types.Decoder> => ({
+      (): common.SchemaTransformation<types.AnyDecoder> => ({
         transform: (validation, cutOffTopLevelUndefined) =>
           convert.transformToJSONSchema(
             validation,
@@ -69,12 +69,12 @@ export type Input<
 > = common.JSONSchemaFunctionalityCreationArgumentsContentTypes<
   TTransformedSchema,
   TContentTypes,
-  types.Encoder | types.Decoder
+  types.AnyEncoder | types.AnyDecoder
 > & {
-  override?: common.Override<types.Encoder | types.Decoder>;
+  override?: common.Override<types.AnyEncoder | types.AnyDecoder>;
 };
 
 const getUndefinedPossibility = (
-  validation: types.Encoder | types.Decoder,
+  validation: types.AnyEncoder | types.AnyDecoder,
 ): common.UndefinedPossibility =>
   validation instanceof t.Type && validation.is(undefined);
