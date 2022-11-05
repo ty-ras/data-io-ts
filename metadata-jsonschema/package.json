@@ -1,6 +1,6 @@
 {
   "name": "@ty-ras/metadata-jsonschema-io-ts",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "author": {
     "name": "Stanislav Muhametsin",
     "email": "346799+stazz@users.noreply.github.com",
@@ -31,7 +31,7 @@
     }
   },
   "dependencies": {
-    "@ty-ras/data-io-ts": "0.12.3",
+    "@ty-ras/data-io-ts": "0.12.4",
     "@ty-ras/metadata-jsonschema": "0.12.1"
   },
   "peerDependencies": {
