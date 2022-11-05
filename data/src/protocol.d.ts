@@ -17,6 +17,6 @@ export type GetEncodedObject<T> = {
 };
 export type GetEncodedArray<T> = Array<GetEncoded<T>>;
 
-export interface HKTEncoded extends protocol.HKTEncoded {
+export interface HKTEncoded extends protocol.HKTEncodedBase {
   readonly typeEncoded: GetEncoded<this["_TEncodedSpec"]>;
 }
