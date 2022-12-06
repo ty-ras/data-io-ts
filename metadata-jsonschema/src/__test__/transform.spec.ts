@@ -22,12 +22,19 @@ test("Validate transformToJSONSchema basic usages work", (c) => {
 });
 
 test("Validate transformToJSONSchema complex non-hierarchical usages work", (c) => {
-  c.plan(6);
+  c.plan(7);
   c.deepEqual(rawTransformToJSONSchema(t.literal("literal")), {
+    type: "string",
     const: "literal",
     description: '"literal"',
   });
+  c.deepEqual(rawTransformToJSONSchema(t.literal(true)), {
+    type: "boolean",
+    const: true,
+    description: "true",
+  });
   c.deepEqual(rawTransformToJSONSchema(t.keyof({ literal: true })), {
+    type: "string",
     const: "literal",
     description: '"literal"',
   });
@@ -35,6 +42,7 @@ test("Validate transformToJSONSchema complex non-hierarchical usages work", (c) 
   c.deepEqual(
     rawTransformToJSONSchema(t.keyof({ literal: true, anotherLiteral: true })),
     {
+      type: "string",
       enum: ["literal", "anotherLiteral"],
       description: '"literal" | "anotherLiteral"',
     },
@@ -44,7 +52,7 @@ test("Validate transformToJSONSchema complex non-hierarchical usages work", (c) 
 });
 
 test("Validate transformToJSONSchema simple hierarchical usages work", (c) => {
-  c.plan(4);
+  c.plan(5);
   simpleTransformToJSONSchema(
     c,
     t.refinement(t.string, () => true),
@@ -66,6 +74,14 @@ test("Validate transformToJSONSchema simple hierarchical usages work", (c) => {
     ...expectedArray,
     description: "ReadonlyArray<string>",
   });
+  c.deepEqual(
+    rawTransformToJSONSchema(t.union([t.literal("one"), t.literal("two")])),
+    {
+      type: "string",
+      enum: ["one", "two"],
+      description: '("one" | "two")',
+    },
+  );
 });
 
 test("Validate transformToJSONSchema record types work", (c) => {
@@ -132,7 +148,7 @@ test("Validate transformToJSONSchema record types work", (c) => {
 });
 
 test("Validate transformToJSONSchema complex hierarchical usages work", (c) => {
-  c.plan(5);
+  c.plan(6);
   // Union
   const stringAndNumber: Array<common.JSONSchema> = [
     {
@@ -178,6 +194,15 @@ test("Validate transformToJSONSchema complex hierarchical usages work", (c) => {
     items: stringAndNumber,
     description: "[string, number]",
   });
+
+  // Heterogenous literal unions
+  c.deepEqual(
+    rawTransformToJSONSchema(t.union([t.literal("literal"), t.literal(1)])),
+    {
+      enum: ["literal", 1],
+      description: '("literal" | 1)',
+    },
+  );
 });
 
 test("Validate transformToJSONSchema works for io-ts-types", (c) => {

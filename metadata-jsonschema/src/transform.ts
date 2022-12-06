@@ -1,4 +1,5 @@
 import type * as data from "@ty-ras/data-io-ts";
+import { function as F, readonlyArray as RA, eq as EQ } from "fp-ts";
 import * as t from "io-ts";
 import * as tt from "io-ts-types";
 import * as common from "@ty-ras/metadata-jsonschema";
@@ -88,11 +89,9 @@ const transformTagged = (
     case "AnyDictionaryType":
       return makeTypedSchema("object");
     case "LiteralType":
-      return {
-        const: type.value,
-      };
+      return transformLiteral(type.value);
     case "KeyofType":
-      return compactConsts(type.keys);
+      return transformKeyOf(type.keys);
     case "RefinementType":
     case "ReadonlyType":
       return recursion(type.type);
@@ -129,18 +128,14 @@ const transformTagged = (
         retVal = tryTransformTopLevelSchema(recursion, components);
       }
       if (retVal === undefined) {
-        retVal = {
-          anyOf: components.map(recursion),
-        };
+        retVal = tryGetCommonTypeName("anyOf", components.map(recursion));
       }
       return common.tryToCompressUnionOfMaybeEnums(retVal);
     }
     case "IntersectionType":
       // TODO: optimize intersection of type + partial into one definition
       // TODO: we probably need to call flattenDeepStructures here too?
-      return {
-        allOf: type.types.map(recursion),
-      };
+      return tryGetCommonTypeName("allOf", type.types.map(recursion));
     case "TupleType":
       return makeTypedSchema("array", {
         minItems: type.types.length,
@@ -253,21 +248,6 @@ const makeObjectWithPropertiesSchema = (
   return retVal;
 };
 
-const compactConsts = (
-  keysObject: Record<string, unknown>,
-): common.JSONSchema | undefined => {
-  const keys = Object.keys(keysObject);
-  return keys.length === 1
-    ? {
-        const: keys[0],
-      }
-    : keys.length > 1
-    ? {
-        enum: keys,
-      }
-    : false;
-};
-
 const tryTransformTopLevelSchema = (
   recursion: Recursion,
   components: ReadonlyArray<AllTypes>,
@@ -279,12 +259,58 @@ const tryTransformTopLevelSchema = (
     ? // This is top-level optional schema -> just transform the underlying non-undefineds
       nonUndefineds.length === 1
       ? recursion(nonUndefineds[0])
-      : {
-          anyOf: nonUndefineds.map(recursion),
-        }
+      : tryGetCommonTypeName("anyOf", nonUndefineds.map(recursion))
     : undefined;
 };
 
 type Recursion = (
   item: types.AnyEncoder | types.AnyDecoder,
 ) => common.JSONSchema;
+
+const transformKeyOf = (
+  keysObject: Record<string, unknown>,
+): common.JSONSchema | undefined => {
+  const keys = Object.keys(keysObject);
+  return keys.length <= 0
+    ? false
+    : makeTypedSchema(
+        "string",
+        keys.length === 1
+          ? {
+              const: keys[0],
+            }
+          : {
+              enum: keys,
+            },
+      );
+};
+
+const transformLiteral = (value: string | number | boolean) =>
+  makeTypedSchema(
+    typeof value === "string"
+      ? "string"
+      : typeof value === "number"
+      ? "number"
+      : "boolean",
+    {
+      const: value,
+    },
+  );
+
+const tryGetCommonTypeName = <TName extends "anyOf" | "allOf">(
+  name: TName,
+  schemas: ReadonlyArray<common.JSONSchema>,
+): JSONSchemaObject => {
+  const types = F.pipe(
+    schemas,
+    RA.map((s) =>
+      typeof s === "object" && typeof s.type === "string" ? s.type : undefined,
+    ),
+    RA.uniq(EQ.fromEquals((x, y) => x === y)),
+  );
+  const retVal: JSONSchemaObject = { [name]: schemas };
+  if (types.length === 1 && types[0] !== undefined) {
+    retVal.type = types[0];
+  }
+  return retVal;
+};
