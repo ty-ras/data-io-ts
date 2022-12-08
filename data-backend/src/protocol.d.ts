@@ -1,5 +1,4 @@
 // Import generic REST-related things
-import type * as ep from "@ty-ras/endpoint";
 import type * as spec from "@ty-ras/endpoint-spec";
 import type * as protocol from "@ty-ras/protocol";
 import type * as data from "@ty-ras/data";
@@ -24,7 +23,7 @@ export type EndpointSpec<
     string,
     md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
-> = ep.HttpMethodWithoutBody extends TProtocolSpec["method"]
+> = data.HttpMethodWithoutBody extends TProtocolSpec["method"]
   ? MakeSpecWithoutBody<
       TProtocolSpec,
       TFunctionality,
