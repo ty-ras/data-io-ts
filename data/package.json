@@ -1,6 +1,6 @@
 {
   "name": "@ty-ras/data-io-ts",
-  "version": "0.12.5",
+  "version": "0.13.0",
   "author": {
     "name": "Stanislav Muhametsin",
     "email": "346799+stazz@users.noreply.github.com",
@@ -31,8 +31,8 @@
     }
   },
   "dependencies": {
-    "@ty-ras/data": "0.12.3",
-    "@ty-ras/protocol": "0.12.1"
+    "@ty-ras/data": "0.13.0",
+    "@ty-ras/protocol": "0.13.0"
   },
   "peerDependencies": {
     "fp-ts": "^2.12.3",
