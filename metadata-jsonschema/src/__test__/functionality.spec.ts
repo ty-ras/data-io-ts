@@ -13,7 +13,10 @@ test("Validate createJsonSchemaFunctionality works for non-schema-transformation
     });
 
   c.deepEqual(getUndefinedPossibility(t.undefined), true);
-  c.deepEqual(getUndefinedPossibility(t.union([t.string, t.undefined])), true);
+  c.deepEqual(
+    getUndefinedPossibility(t.union([t.string, t.undefined])),
+    undefined,
+  );
   c.deepEqual(getUndefinedPossibility(t.string), false);
 
   c.deepEqual(Object.keys(decoders), contentTypes);
