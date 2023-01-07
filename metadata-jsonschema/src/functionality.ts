@@ -74,7 +74,11 @@ export type Input<
   override?: common.OverrideGeneric<types.AnyEncoder | types.AnyDecoder>;
 };
 
-const getUndefinedPossibility = (
-  validation: types.AnyEncoder | types.AnyDecoder,
-): common.UndefinedPossibility =>
-  validation instanceof t.Type && validation.is(undefined);
+const getUndefinedPossibility: common.GetUndefinedPossibility<
+  types.AnyEncoder | types.AnyDecoder
+> = (validation) =>
+  validation instanceof t.Type && validation.is(undefined)
+    ? validation === t.undefined
+      ? true
+      : undefined
+    : false;
