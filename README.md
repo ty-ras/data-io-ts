@@ -7,4 +7,4 @@ The Typesafe REST API Specification (TyRAS) is a family of libraries used to ena
 The protocol specification is checked both at compile-time and run-time to verify that communication indeed adhers to the protocol.
 This all is done in such way that it does not make development tedious or boring, but instead robust and fun!
 
-This particular repository contains related libraries related to using TyRAS with [IO-TS](https://github.com/gcanti/io-ts) data validation library:
+This particular repository contains related libraries related to using TyRAS with [`io-ts`](https://github.com/gcanti/io-ts) data validation library:
