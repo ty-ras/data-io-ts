@@ -35,48 +35,6 @@ test("Validate that throwOnError works correctly", (c) => {
   }
 });
 
-test("Validate that validateFromMaybeStringifiedJSON works correctly", (c) => {
-  c.plan(2);
-  let seenValue: unknown;
-  const error = new Error();
-  const willAlwaysFail = spec.validateFromMaybeStringifiedJSON(
-    t.void,
-    (nonStringValue) => ((seenValue = nonStringValue), error),
-  );
-  c.deepEqual(willAlwaysFail(123), { _tag: "Left", left: error });
-  c.deepEqual(seenValue, 123);
-});
-
-test("Validate that validateFromStringifiedJSON works correctly", (c) => {
-  c.plan(2);
-  const willAlwaysFail = spec.validateFromStringifiedJSON(t.void);
-  c.deepEqual(willAlwaysFail("{}"), {
-    _tag: "Left",
-    left: [
-      {
-        context: [
-          {
-            key: "",
-            actual: {},
-            type: t.void,
-          },
-        ],
-        value: {},
-        message: undefined,
-      },
-    ],
-  });
-  const realistic = spec.validateFromStringifiedJSON(
-    t.type({ property: t.string }),
-  );
-  c.deepEqual(realistic('{"property": "hello"}'), {
-    _tag: "Right",
-    right: {
-      property: "hello",
-    },
-  });
-});
-
 test("Validate that getOrElseThrow works correctly", (c) => {
   c.plan(3);
   const error = new Error();
@@ -84,22 +42,4 @@ test("Validate that getOrElseThrow works correctly", (c) => {
   c.throws(() => spec.getOrElseThrow(E.left(error)));
   c.throws(() => spec.getOrElseThrow(E.left(iotsError)));
   c.deepEqual(spec.getOrElseThrow(E.right("ok")), "ok");
-});
-
-test("Validate that readJSONStringToValueOrThrow works correctly", (c) => {
-  c.plan(5);
-  const ifNotString = new Error();
-  const validator = spec.readJSONStringToValueOrThrow(
-    t.string,
-    () => ifNotString,
-  );
-  // When not non-empty string, custom callback gets invoked
-  c.throws(() => validator(12), { is: ifNotString });
-  c.throws(() => validator(""), { is: ifNotString });
-  // If string but not parseable to JSON, the JSON.parse will throw
-  c.throws(() => validator("  "), { instanceOf: Error });
-  // When JSON string but doesn't pass validation, IO-TS error is thrown
-  c.throws(() => validator("123"), { instanceOf: Error });
-  // Otherwise, is success
-  c.deepEqual(validator('"hello"'), "hello");
 });
