@@ -1,6 +1,6 @@
 {
   "name": "@ty-ras/data-backend-io-ts",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "author": {
     "name": "Stanislav Muhametsin",
     "email": "346799+stazz@users.noreply.github.com",
@@ -31,7 +31,7 @@
     }
   },
   "dependencies": {
-    "@ty-ras/data-io-ts": "0.13.0",
+    "@ty-ras/data-io-ts": "0.13.1",
     "@ty-ras/endpoint-spec": "0.13.0"
   },
   "peerDependencies": {
