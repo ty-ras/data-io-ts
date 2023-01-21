@@ -16,8 +16,8 @@ test("Validate createAPICallFactory works", async (c) => {
   const url = "/path";
   const apiResponse = await factory
     .withHeaders({})
-    .makeAPICall<ProtocolEndpoint>("GET", {
-      method: data.plainValidator(t.literal("GET")),
+    .makeAPICall<ProtocolEndpoint>({
+      method: "GET",
       response: data.plainValidator(t.string),
       url,
     })();
