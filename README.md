@@ -8,3 +8,8 @@ The protocol specification is checked both at compile-time and run-time to verif
 This all is done in such way that it does not make development tedious or boring, but instead robust and fun!
 
 This particular repository contains related libraries related to using TyRAS with [`io-ts`](https://github.com/gcanti/io-ts) data validation library:
+- [data](./data) folder contains `io-ts`-specific library `@ty-ras/data-io-ts` commonly used by both frontend and backend,
+- [data-backend](./data-backend) folder contains `io-ts`-specific library `@ty-ras/data-backend-io-ts` used by backend,
+- [data-frontend](./data-frontend) folder contains `io-ts`-specific library `@ty-ras/data-frontend-io-ts` used by frontend, and
+- [metadata-jsonchema](./metadata-jsonschema) folder contains `io-ts`-specific library `@ty-ras/metadata-jsonschema-io-ts` used to transform `io-ts` validators into [JSON schema](https://json-schema.org/) objects.
+  It is typically used by backend, but it is not restricted to that.

@@ -1,16 +1,20 @@
+/**
+ * @file This file contains unit tests for functionality in file `../error.ts`.
+ */
+
 /* eslint-disable sonarjs/no-duplicate-string */
 import test from "ava";
 import * as spec from "../error";
 import * as t from "io-ts";
-import * as f from "fp-ts";
+import { function as F, either as E } from "fp-ts";
 
 test("Validate getHumanReadableErrorMessage works", (c) => {
   c.plan(1);
   c.deepEqual(
-    f.function.pipe(
+    F.pipe(
       "not-a-number",
       t.number.decode,
-      f.either.mapLeft(spec.getHumanReadableErrorMessage),
+      E.mapLeft(spec.getHumanReadableErrorMessage),
     ),
     {
       _tag: "Left",
@@ -21,12 +25,12 @@ test("Validate getHumanReadableErrorMessage works", (c) => {
 
 test("Validate createErrorObject works", (c) => {
   c.plan(2);
-  const result = f.function.pipe(
+  const result = F.pipe(
     "not-a-number",
     t.number.decode,
-    f.either.mapLeft(spec.createErrorObject),
+    E.mapLeft(spec.createErrorObject),
   );
-  if (f.either.isLeft(result)) {
+  if (E.isLeft(result)) {
     // Like because functions are compared by-ref, and the function returned by createErrorObject is private
     const errorInfo: spec.ValidationError = [
       {

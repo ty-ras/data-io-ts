@@ -1,3 +1,7 @@
+/**
+ * @file This file contains unit tests for functionality in file `../methods.ts`.
+ */
+
 import test, { ExecutionContext } from "ava";
 import * as spec from "../methods";
 import type * as data from "@ty-ras/data";
