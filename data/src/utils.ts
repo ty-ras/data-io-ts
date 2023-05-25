@@ -1,6 +1,7 @@
 /**
  * @file This file contains utility function to wrap 'native' `io-ts` {@link t.Validation} into TyRAS {@link data.DataValidatorResult}.
  */
+
 import * as t from "io-ts";
 import type * as data from "@ty-ras/data";
 import * as error from "./error";

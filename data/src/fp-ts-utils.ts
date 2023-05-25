@@ -1,6 +1,7 @@
 /**
  * @file This file contains functionality related to handling normal and `io-ts` errors.
  */
+
 import * as errorFunctionality from "./error";
 import * as t from "io-ts";
 import { function as F, either as E } from "fp-ts";

@@ -1,6 +1,7 @@
 /**
  * @file This file contains `io-ts` validators for all HTTP method strings.
  */
+
 import * as t from "io-ts";
 import * as data from "@ty-ras/data";
 import * as validate from "./validate";
