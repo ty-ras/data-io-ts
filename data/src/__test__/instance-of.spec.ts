@@ -1,3 +1,7 @@
+/**
+ * @file This file contains unit tests for functionality in file `../instance-of.ts`.
+ */
+
 import test from "ava";
 import * as spec from "../instance-of";
 

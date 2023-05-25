@@ -1,3 +1,7 @@
+/**
+ * @file This file contains unit tests for functionality in file `../validate.ts`.
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import test from "ava";
@@ -7,7 +11,7 @@ import * as pipe from "./pipe";
 
 test("Validate plainValidator works", (c) => {
   c.plan(2);
-  const validator = spec.plainValidator(t.number);
+  const validator = spec.fromDecoder(t.number);
   c.deepEqual(validator(123), {
     error: "none",
     data: 123,
@@ -32,7 +36,7 @@ test("Validate plainValidator works", (c) => {
 
 test("Validate plainValidatorEncoder works for unvalidated data", (c) => {
   c.plan(2);
-  const encoder = spec.plainValidatorEncoder(pipe.stringToNumber, false);
+  const encoder = spec.fromEncoder(pipe.stringToNumber);
   c.deepEqual(encoder(123), {
     error: "none",
     data: "123",
@@ -52,22 +56,5 @@ test("Validate plainValidatorEncoder works for unvalidated data", (c) => {
         value: "123",
       },
     ],
-  });
-});
-
-test("Validate plainValidatorEncoder works for validated data", (c) => {
-  c.plan(2);
-  const encoder = spec.plainValidatorEncoderForValidatedData(
-    pipe.stringToNumber,
-  );
-  c.deepEqual(encoder(123), {
-    error: "none",
-    data: "123",
-  });
-  // Notice! Since we used ForValidatedData variant meaning that input data should be already validated, the `.is` is not invoked.
-  // This results in wrong output - but that means that caller broke contract that data should be already validated.
-  c.like(encoder("123" as any), {
-    error: "none",
-    data: "123",
   });
 });
