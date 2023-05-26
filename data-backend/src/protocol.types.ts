@@ -1,18 +1,28 @@
-// Import generic REST-related things
+/**
+ * @file This types-only file contains types related to extracting batch spec types of {@link spec} library from protocol types of {@link protocol} library.
+ */
+
 import type * as spec from "@ty-ras/endpoint-spec";
 import type * as protocol from "@ty-ras/protocol";
 import type * as data from "@ty-ras/data";
 import type * as md from "@ty-ras/metadata";
+import type * as dataIOTS from "@ty-ras/data-io-ts";
 
-// Import plugin for IO-TS
-import type * as tPluginCommon from "@ty-ras/data-io-ts";
-import type * as body from "./body";
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * This type defines the decoder (deserializer) for request/response header values.
+ */
+export type HeaderDecoder = dataIOTS.Decoder<any>;
 
-export type HeaderDecoder = tPluginCommon.Decoder<any>;
-export type HeaderEncoder = tPluginCommon.Encoder<any, data.HeaderValue>;
+/**
+ * This type defines the encoder (serializer) for request/response header values.
+ */
+export type HeaderEncoder = dataIOTS.Encoder<any, data.HeaderValue>;
 
+/**
+ * This is helper type to create batch spec type of TyRAS {@link spec} library from the given protocol type of TyRAS {@link protocol} library.
+ */
 export type EndpointSpec<
   TProtocolSpec extends protocol.ProtocolSpecCore<string, unknown>,
   TFunctionality extends (...args: any) => any,
@@ -23,6 +33,8 @@ export type EndpointSpec<
     string,
     md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
+  TRequestBodyContentType extends string,
+  TResponseBodyContentType extends string,
 > = data.HttpMethodWithoutBody extends TProtocolSpec["method"]
   ? MakeSpecWithoutBody<
       TProtocolSpec,
@@ -30,7 +42,8 @@ export type EndpointSpec<
       TContext,
       TStateInfo,
       TState,
-      TMetadataProviders
+      TMetadataProviders,
+      TResponseBodyContentType
     >
   : TProtocolSpec extends protocol.ProtocolSpecRequestBody<unknown>
   ? MakeSpecWithBody<
@@ -39,7 +52,9 @@ export type EndpointSpec<
       TContext,
       TStateInfo,
       TState,
-      TMetadataProviders
+      TMetadataProviders,
+      TRequestBodyContentType,
+      TResponseBodyContentType
     >
   : MakeSpecWithoutBody<
       TProtocolSpec,
@@ -47,10 +62,13 @@ export type EndpointSpec<
       TContext,
       TStateInfo,
       TState,
-      TMetadataProviders
+      TMetadataProviders,
+      TRequestBodyContentType
     >;
 
-/* eslint-disable @typescript-eslint/ban-types */
+/**
+ * This is helper type used by {@link EndpointSpec}. It is not meant to be used directly by client code.
+ */
 export type MakeSpecWithoutBody<
   TProtocolSpec extends protocol.ProtocolSpecCore<string, unknown>,
   TFunctionality extends (...args: any) => any,
@@ -61,6 +79,7 @@ export type MakeSpecWithoutBody<
     string,
     md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
+  TResponseBodyContentType extends string,
 > = (TProtocolSpec extends protocol.ProtocolSpecResponseHeaders<
   infer TResponseHeaders
 >
@@ -70,11 +89,12 @@ export type MakeSpecWithoutBody<
       TState,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
-      body.OutputValidatorSpec<
+      OutputValidatorSpec<
         ExtractReturnType<TFunctionality>,
-        tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
+        dataIOTS.GetEncoded<TProtocolSpec["responseBody"]>,
+        TResponseBodyContentType
       >,
-      tPluginCommon.GetRuntime<TResponseHeaders>,
+      dataIOTS.GetRuntime<TResponseHeaders>,
       HeaderEncoder,
       {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
         ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
@@ -95,9 +115,10 @@ export type MakeSpecWithoutBody<
       TState,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
-      body.OutputValidatorSpec<
+      OutputValidatorSpec<
         ExtractReturnType<TFunctionality>,
-        tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
+        dataIOTS.GetEncoded<TProtocolSpec["responseBody"]>,
+        TResponseBodyContentType
       >,
       {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
         ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
@@ -130,6 +151,9 @@ export type MakeSpecWithoutBody<
       >
     : { [P in keyof spec.BatchSpecificationHeaderArgs<never, never>]?: never });
 
+/**
+ * This is helper type used by {@link EndpointSpec}. It is not meant to be used directly by client code.
+ */
 export type MakeSpecWithBody<
   TProtocolSpec extends protocol.ProtocolSpecCore<string, unknown> &
     protocol.ProtocolSpecRequestBody<unknown>,
@@ -141,6 +165,8 @@ export type MakeSpecWithBody<
     string,
     md.MetadataProviderForEndpoints<any, any, any, any, any, any, any>
   >,
+  TRequestBodyContentType extends string,
+  TResponseBodyContentType extends string,
 > = (TProtocolSpec extends protocol.ProtocolSpecResponseHeaders<
   infer TResponseHeaders
 >
@@ -150,14 +176,18 @@ export type MakeSpecWithBody<
       TState,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
-      body.OutputValidatorSpec<
+      OutputValidatorSpec<
         ExtractReturnType<TFunctionality>,
-        tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
+        dataIOTS.GetEncoded<TProtocolSpec["responseBody"]>,
+        TResponseBodyContentType
       >,
-      tPluginCommon.GetRuntime<TResponseHeaders>,
+      dataIOTS.GetRuntime<TResponseHeaders>,
       HeaderEncoder,
       protocol.RuntimeOf<TProtocolSpec["requestBody"]>,
-      body.InputValidatorSpec<protocol.RuntimeOf<TProtocolSpec["requestBody"]>>,
+      InputValidatorSpec<
+        protocol.RuntimeOf<TProtocolSpec["requestBody"]>,
+        TRequestBodyContentType
+      >,
       {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
         ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
         : {}) &
@@ -177,12 +207,16 @@ export type MakeSpecWithBody<
       TState,
       TProtocolSpec["method"],
       ExtractReturnType<TFunctionality>,
-      body.OutputValidatorSpec<
+      OutputValidatorSpec<
         ExtractReturnType<TFunctionality>,
-        tPluginCommon.GetEncoded<TProtocolSpec["responseBody"]>
+        dataIOTS.GetEncoded<TProtocolSpec["responseBody"]>,
+        TResponseBodyContentType
       >,
       protocol.RuntimeOf<TProtocolSpec["requestBody"]>,
-      body.InputValidatorSpec<protocol.RuntimeOf<TProtocolSpec["requestBody"]>>,
+      InputValidatorSpec<
+        protocol.RuntimeOf<TProtocolSpec["requestBody"]>,
+        TRequestBodyContentType
+      >,
       {} & (TProtocolSpec extends protocol.ProtocolSpecURL<infer TURLData>
         ? spec.EndpointHandlerArgsWithURL<protocol.RuntimeOf<TURLData>>
         : {}) &
@@ -214,16 +248,41 @@ export type MakeSpecWithBody<
       >
     : { [P in keyof spec.BatchSpecificationHeaderArgs<never, never>]?: never });
 
+/**
+ * This is helper type used by {@link EndpointSpec}. It is not meant to be used directly by client code.
+ */
 export type ExtractReturnType<TFunctionality extends (...args: any) => any> =
   ReturnType<TFunctionality> extends Promise<infer T>
     ? T
     : ReturnType<TFunctionality>;
 
+/**
+ * This is helper type used by {@link EndpointSpec}. It is not meant to be used directly by client code.
+ */
 export type ExtractReturnTypeWithHeaders<
   TFunctionality extends (...args: any) => any,
-> = ExtractReturnType<TFunctionality> extends spec.EndpointHandlerOutputWithHeaders<
-  infer TOutput,
-  any
->
-  ? TOutput
-  : never;
+> =
+  ExtractReturnType<TFunctionality> extends spec.EndpointHandlerOutputWithHeaders<
+    infer TOutput,
+    any
+  >
+    ? TOutput
+    : never;
+
+/**
+ * This type contains the definition for `input` property of {@link spec.EndpointSpecArgsJustBody}.
+ */
+export type InputValidatorSpec<TData, TContentType extends string> = {
+  [P in TContentType]: dataIOTS.Decoder<TData>;
+};
+
+/**
+ * This type contains the definition for `output` property of {@link spec.EndpointSpecArgsJustResponseBody}.
+ */
+export type OutputValidatorSpec<
+  TOutput,
+  TSerialized,
+  TContentType extends string,
+> = {
+  [P in TContentType]: dataIOTS.Encoder<TOutput, TSerialized>;
+};
