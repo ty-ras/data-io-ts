@@ -1,5 +1,5 @@
 /**
- * @file This file contains unit tests for functionality in file `../jsonschema.ts`.
+ * @file This file contains unit tests for functionality in file `../headers.ts`.
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
