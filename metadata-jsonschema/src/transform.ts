@@ -1,10 +1,21 @@
-import type * as data from "@ty-ras/data-io-ts";
+/**
+ * @file This file contains code related to transforming `io-ts` validators to JSON schema objects.
+ */
+
 import { function as F, readonlyArray as RA, eq as EQ } from "fp-ts";
 import * as t from "io-ts";
 import * as tt from "io-ts-types";
 import * as common from "@ty-ras/metadata-jsonschema";
-import type * as types from "./types";
+import type * as types from "./md.types";
 
+/**
+ * This function will transform the given {@link types.AnyDecoder} or {@link types.AnyDecoder} into {@link common.JSONSchema} value.
+ * @param validation The `io-ts` decoder or encoder.
+ * @param cutOffTopLevelUndefined When traversing validators hierarchically, set to `true` to consider top-level `X | undefined` value as just `X`.
+ * @param override The optional callback to override certain decoders or encoders.
+ * @param fallbackValue The callback to get fallback value when this transformation fails to construct the {@link common.JSONSchema} value.
+ * @returns The {@link common.JSONSchema}
+ */
 export const transformToJSONSchema = (
   validation: types.AnyEncoder | types.AnyDecoder,
   cutOffTopLevelUndefined: boolean,
@@ -162,13 +173,6 @@ const transformTagged = (
       return true;
     case "ObjectType":
       return makeTypedSchema("object");
-    case "PipeTransform": {
-      const retVal = recursion(type.stringType);
-      if (retVal && typeof retVal === "object") {
-        retVal.description = type.name;
-      }
-      return retVal;
-    }
   }
 };
 
@@ -201,9 +205,7 @@ type AllTypes =
   | t.NeverType
   | t.AnyType
   | t.ObjectType
-  | t.StrictType<t.Any>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | data.Pipe<any, any>;
+  | t.StrictType<t.Any>;
 
 const transformFromIOTypes = common.transformerFromMany<
   unknown,

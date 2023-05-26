@@ -1,3 +1,7 @@
+/**
+ * @file This file contains unit tests for functionality in file `../api-call.ts`.
+ */
+
 import test from "ava";
 import * as spec from "..";
 import * as dataFE from "@ty-ras/data-frontend";
@@ -10,7 +14,7 @@ test("Validate createAPICallFactory works", async (c) => {
   const response: dataFE.HTTPInvocationResult = {
     body: "body",
   };
-  const factory = spec.createAPICallFactory(
+  const factory = spec.createAPICallFactoryWithCallback(
     (args) => (seenArgs.push(args), Promise.resolve(response)),
   );
   const url = "/path";
@@ -18,7 +22,7 @@ test("Validate createAPICallFactory works", async (c) => {
     .withHeaders({})
     .makeAPICall<ProtocolEndpoint>({
       method: "GET",
-      response: data.plainValidator(t.string),
+      response: data.fromDecoder(t.string),
       url,
     })();
   c.deepEqual(seenArgs, [

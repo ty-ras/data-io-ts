@@ -1,55 +1,145 @@
-import * as dataBE from "@ty-ras/data-backend";
+/**
+ * @file This file contains code to create generic TyRAS callbacks from 'native' `io-ts` validators, for HTTP request and response body validation.
+ */
+
+import * as data from "@ty-ras/data-backend";
 import * as common from "@ty-ras/data-io-ts";
 import * as rawbody from "raw-body";
+import type * as protocol from "./protocol.types";
 
-// We only support json things for io-ts validation.
+/**
+ * This is the default MIME type used to serialize/deserialize response/request bodies.
+ * Its value is `application/json`.
+ */
 export const CONTENT_TYPE = "application/json" as const;
 
-export const requestBody = <T>(
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorRequestInputSpec} for validating request body, wrapping native `io-ts` {@link common.Decoder}, without additional options.
+ * @param validation The {@link common.Decoder} responsible for validating the deserialized and and JSON-parsed request body.
+ * @returns The {@link data.DataValidatorRequestInputSpec} that can be passed to TyRAS functions as request body validator.
+ */
+export function requestBody<T>(
   validation: common.Decoder<T>,
-  strictContentType = false,
-  opts?: rawbody.Options,
-): dataBE.DataValidatorRequestInputSpec<T, InputValidatorSpec<T>> =>
-  dataBE.requestBodyGeneric(
+): data.DataValidatorRequestInputSpec<
+  T,
+  protocol.InputValidatorSpec<T, typeof CONTENT_TYPE>
+>;
+
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorRequestInputSpec} for validating request body, wrapping native `io-ts` {@link common.Decoder}, with additional options.
+ * @param validation The {@link common.Decoder} responsible for validating the deserialized and and JSON-parsed request body.
+ * @param opts The {@link RequestBodyCreationOptions}, without custom content type specifier.
+ * @returns The {@link data.DataValidatorRequestInputSpec} that can be passed to TyRAS functions as request body validator.
+ */
+export function requestBody<T>(
+  validation: common.Decoder<T>,
+  opts: RequestBodyCreationOptions & { contentType?: never },
+): data.DataValidatorRequestInputSpec<
+  T,
+  protocol.InputValidatorSpec<T, typeof CONTENT_TYPE>
+>;
+
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorRequestInputSpec} for validating request body, wrapping native `io-ts` {@link common.Decoder}, with additional options, including content type.
+ * @param validation The {@link common.Decoder} responsible for validating the deserialized and and JSON-parsed request body.
+ * @param opts The {@link RequestBodyCreationOptions}, along with custom content type specifier.
+ * @returns The {@link data.DataValidatorRequestInputSpec} that can be passed to TyRAS functions as request body validator.
+ */
+export function requestBody<T, TContentType extends string>(
+  validation: common.Decoder<T>,
+  opts: RequestBodyCreationOptions & { contentType: TContentType },
+): data.DataValidatorRequestInputSpec<
+  T,
+  protocol.InputValidatorSpec<T, TContentType>
+>;
+
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorRequestInputSpec} for validating request body, wrapping native `io-ts` {@link common.Decoder}, with additional options, possibly including content type.
+ * @param validation The {@link common.Decoder} responsible for validating the deserialized and and JSON-parsed request body.
+ * @param opts The {@link RequestBodyCreationOptions}, possibly with custom content type specifier.
+ * @returns The {@link data.DataValidatorRequestInputSpec} that can be passed to TyRAS functions as request body validator.
+ */
+export function requestBody<T, TContentType extends string>(
+  validation: common.Decoder<T>,
+  opts?: RequestBodyCreationOptions & { contentType?: TContentType },
+): data.DataValidatorRequestInputSpec<
+  T,
+  protocol.InputValidatorSpec<T, TContentType>
+> {
+  return data.requestBodyGeneric(
     validation,
-    common.plainValidator(validation),
-    CONTENT_TYPE,
-    strictContentType,
+    common.fromDecoder(validation),
+    opts?.contentType ?? CONTENT_TYPE,
+    opts?.strictContentType === true,
     async (readable, encoding) => {
       const bufferOrString = await rawbody.default(readable, {
-        encoding: opts?.encoding ?? encoding,
-        ...(opts ?? {}),
+        encoding: opts?.opts?.encoding ?? encoding,
+        ...(opts?.opts ?? {}),
       });
       return bufferOrString instanceof Buffer
         ? bufferOrString.toString()
         : bufferOrString;
     },
   );
+}
 
-export const responseBody = <TOutput, TSerialized>(
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorResponseOutputSpec} for validating response body, wrapping native `io-ts` {@link common.Encoder}.
+ * @param validation The {@link common.Encoder} responsible for validating the response body before it is stringified and serialized.
+ * @returns The {@link data.DataValidatorResponseOutputSpec} that can be passed to TyRAS functions as response body validator.
+ */
+export function responseBody<TOutput, TSerialized>(
   validation: common.Encoder<TOutput, TSerialized>,
-  contentIsAlreadyValidated: boolean,
-): dataBE.DataValidatorResponseOutputSpec<
+): data.DataValidatorResponseOutputSpec<
   TOutput,
-  OutputValidatorSpec<TOutput, TSerialized>
-> =>
-  dataBE.responseBodyGeneric(
+  protocol.OutputValidatorSpec<TOutput, TSerialized, typeof CONTENT_TYPE>
+>;
+
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorResponseOutputSpec} for validating response body, wrapping native `io-ts` {@link common.Encoder}.
+ * @param validation The {@link common.Encoder} responsible for validating the response body before it is stringified and serialized.
+ * @param contentType The content type to use.
+ * @returns The {@link data.DataValidatorResponseOutputSpec} that can be passed to TyRAS functions as response body validator.
+ */
+export function responseBody<TOutput, TSerialized, TContentType extends string>(
+  validation: common.Encoder<TOutput, TSerialized>,
+  contentType: TContentType,
+): data.DataValidatorResponseOutputSpec<
+  TOutput,
+  protocol.OutputValidatorSpec<TOutput, TSerialized, TContentType>
+>;
+
+/**
+ * Creates a new generic TyRAS {@link data.DataValidatorResponseOutputSpec} for validating response body, wrapping native `io-ts` {@link common.Encoder}.
+ * @param validation The {@link common.Encoder} responsible for validating the response body before it is stringified and serialized.
+ * @param contentType The possible content type to use.
+ * @returns The {@link data.DataValidatorResponseOutputSpec} that can be passed to TyRAS functions as response body validator.
+ */
+export function responseBody<TOutput, TSerialized, TContentType extends string>(
+  validation: common.Encoder<TOutput, TSerialized>,
+  contentType?: TContentType,
+): data.DataValidatorResponseOutputSpec<
+  TOutput,
+  protocol.OutputValidatorSpec<TOutput, TSerialized, TContentType>
+> {
+  return data.responseBodyGeneric(
     validation,
-    common.plainValidatorEncoder(validation, contentIsAlreadyValidated),
-    CONTENT_TYPE,
+    common.fromEncoder(validation),
+    contentType ?? CONTENT_TYPE,
   );
+}
 
-export const responseBodyForValidatedData = <TOutput, TSerialized>(
-  validation: common.Encoder<TOutput, TSerialized>,
-): dataBE.DataValidatorResponseOutputSpec<
-  TOutput,
-  OutputValidatorSpec<TOutput, TSerialized>
-> => responseBody(validation, true);
+/**
+ * This interface contains data that can be specified when using {@link requestBody}.
+ */
+export interface RequestBodyCreationOptions {
+  /**
+   * If set to `true`, the returned request body validator will throw an error if request's `Content-Type` header does not match exactly the given content type (or {@link CONTENT_TYPE} if not given).
+   */
+  strictContentType?: boolean;
 
-export type InputValidatorSpec<TData> = {
-  [CONTENT_TYPE]: common.Decoder<TData>;
-};
-
-export type OutputValidatorSpec<TOutput, TSerialized> = {
-  [CONTENT_TYPE]: common.Encoder<TOutput, TSerialized>;
-};
+  /**
+   * The option {@link rawbody.Options} to use when deserializing the request body.
+   */
+  opts?: rawbody.Options;
+}

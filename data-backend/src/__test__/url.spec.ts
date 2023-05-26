@@ -1,5 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/**
+ * @file This file contains unit tests for functionality in file `../url.ts`.
+ */
+
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
 import test from "ava";
 import * as spec from "../url";
 import * as t from "io-ts";

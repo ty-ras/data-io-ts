@@ -1,6 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/**
+ * @file This file contains unit tests for functionality in file `../body.ts`.
+ */
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
 import test from "ava";
 import * as spec from "../body";
 import * as t from "io-ts";
@@ -85,7 +87,7 @@ test("Validate requestBody works", async (c) => {
 test("Validate responseBody works", (c) => {
   c.plan(3);
   const output = t.string;
-  const { validator, validatorSpec } = spec.responseBody(output, false);
+  const { validator, validatorSpec } = spec.responseBody(output);
   c.deepEqual(validatorSpec, {
     contents: {
       [spec.CONTENT_TYPE]: output,
@@ -116,33 +118,32 @@ test("Validate responseBody works", (c) => {
   });
 });
 
-test("Validate responseBody works for assumption of validated data", (c) => {
-  c.plan(3);
-  const output = t.string;
-  const { validator, validatorSpec } =
-    spec.responseBodyForValidatedData(output);
-  c.deepEqual(validatorSpec, {
-    contents: {
-      [spec.CONTENT_TYPE]: output,
-    },
-  });
-  c.deepEqual(validator("123"), {
-    error: "none",
-    data: {
-      contentType: spec.CONTENT_TYPE,
-      output: JSON.stringify("123"),
-    },
-  });
-  // Notice! Since we used ForValidatedData variant meaning that input data should be already validated, the `.is` is not invoked.
-  // This results in wrong output - but that means that caller broke contract that data should be already validated.
-  c.like(validator(123 as any), {
-    error: "none",
-    data: {
-      contentType: spec.CONTENT_TYPE,
-      output: JSON.stringify(123),
-    },
-  });
-});
+// test("Validate responseBody works for assumption of validated data", (c) => {
+//   c.plan(3);
+//   const output = t.string;
+//   const { validator, validatorSpec } = spec.responseBody(output);
+//   c.deepEqual(validatorSpec, {
+//     contents: {
+//       [spec.CONTENT_TYPE]: output,
+//     },
+//   });
+//   c.deepEqual(validator("123"), {
+//     error: "none",
+//     data: {
+//       contentType: spec.CONTENT_TYPE,
+//       output: JSON.stringify("123"),
+//     },
+//   });
+//   // Notice! Since we used ForValidatedData variant meaning that input data should be already validated, the `.is` is not invoked.
+//   // This results in wrong output - but that means that caller broke contract that data should be already validated.
+//   c.like(validator(123 as any), {
+//     error: "none",
+//     data: {
+//       contentType: spec.CONTENT_TYPE,
+//       output: JSON.stringify(123),
+//     },
+//   });
+// });
 
 test("Validate request body optionality works", async (c) => {
   c.plan(4);
@@ -211,7 +212,7 @@ test("Validate response body detects invalid JSON", (c) => {
   const recursiveValidator = t.recursion<Recursive>("Recursive", (self) =>
     t.type({ a: self }),
   );
-  const { validator } = spec.responseBody(recursiveValidator, false);
+  const { validator } = spec.responseBody(recursiveValidator);
   const recursive: Recursive = {} as any;
   recursive.a = recursive;
   // We would expect error to be JSON.stringify complaining about recursiveness.
@@ -223,3 +224,30 @@ test("Validate response body detects invalid JSON", (c) => {
 interface Recursive {
   a: Recursive;
 }
+
+test("Validate that content type is customizable for request and response body validations", (c) => {
+  c.plan(2);
+
+  // Technically, if the code wouldn't work, these would not even pass TS type checking.
+  const {
+    validatorSpec: {
+      contents: { customContent },
+    },
+  } = spec.requestBody(t.string, { contentType: "customContent" });
+  c.is(
+    customContent,
+    t.string,
+    "The content type must've propagated when passed to the function",
+  );
+
+  const {
+    validatorSpec: {
+      contents: { customContentResponse },
+    },
+  } = spec.responseBody(t.string, "customContentResponse");
+  c.is(
+    customContentResponse,
+    t.string,
+    "The content type must've propagated when passed to the function",
+  );
+});

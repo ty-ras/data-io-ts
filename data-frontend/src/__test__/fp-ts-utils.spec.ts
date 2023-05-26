@@ -1,3 +1,7 @@
+/**
+ * @file This file contains unit tests for functionality in file `../fp-ts-utils.ts`.
+ */
+
 import test from "ava";
 import * as spec from "../fp-ts-utils";
 
