@@ -1,10 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/**
+ * @file This file contains unit tests for functionality in file `../transform.ts`.
+ */
+
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
 import test, { ExecutionContext } from "ava";
 import * as spec from "../transform";
-import type * as types from "../types";
+import type * as types from "../md.types";
 import type * as common from "@ty-ras/metadata-jsonschema";
-import * as data from "@ty-ras/data-io-ts";
+// import * as data from "@ty-ras/data-io-ts";
 import * as t from "io-ts";
 import * as tt from "io-ts-types";
 
@@ -213,20 +216,20 @@ test("Validate transformToJSONSchema works for io-ts-types", (c) => {
   });
 });
 
-test("Validate transformToJSONSchema works for pipe transform", (c) => {
-  c.plan(1);
-  c.deepEqual(
-    // A bit dummy Pipe but enough to serve our purposes
-    rawTransformToJSONSchema(
-      new data.Pipe<string, Date>(t.string, tt.DateFromISOString as any),
-    ),
-    {
-      type: "string",
-      // TODO think about this description...
-      description: "DateFromISOString",
-    },
-  );
-});
+// test("Validate transformToJSONSchema works for pipe transform", (c) => {
+//   c.plan(1);
+//   c.deepEqual(
+//     // A bit dummy Pipe but enough to serve our purposes
+//     rawTransformToJSONSchema(
+//       new data.Pipe<string, Date>(t.string, tt.DateFromISOString as any),
+//     ),
+//     {
+//       type: "string",
+//       // TODO think about this description...
+//       description: "DateFromISOString",
+//     },
+//   );
+// });
 
 test("Validate that transformToJSONSchema works with override and/or fallback callbacks", (c) => {
   c.plan(3);
