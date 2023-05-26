@@ -2,9 +2,10 @@
  * @file This types-only file contains helper types to extract the runtime and serialized types of the types defined in protocol specification.
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any */
 
-import * as protocol from "@ty-ras/protocol";
+import type * as t from "io-ts";
+import type * as protocol from "@ty-ras/protocol";
 
 /**
  * This is type to get the runtime representation of type which might be expressed as {@link protocol.Encoded}.
@@ -47,3 +48,13 @@ export interface HKTEncoded extends protocol.HKTEncodedBase {
    */
   readonly typeEncoded: GetEncoded<this["_TEncodedSpec"]>;
 }
+
+/**
+ * Helper type to extract the runtime and encoded types of given `io-ts` validation object {@link t.Type}, when specifying types for protocol.
+ */
+export type ProtocolTypeOf<TValidation extends t.Type<any, any, any>> =
+  TValidation extends t.Type<infer A, infer O, infer _>
+    ? A extends O
+      ? A // Just 'normal' validation like t.string, t.number, t.type, etc
+      : protocol.Encoded<GetRuntime<A>, GetEncoded<O>> // The validation typically of 'io-ts-types' library, which takes one type as input, and produces another type as output (e.g. DateFromISOString)
+    : never;
