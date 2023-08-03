@@ -11,7 +11,10 @@ test("Validate headers works", (c) => {
   c.plan(5);
   const headerParamValue = t.string;
   const { validators, metadata } = spec.requestHeaders({
-    headerParam: headerParamValue,
+    headerParam: {
+      required: true,
+      decoder: headerParamValue,
+    },
   });
   c.deepEqual(metadata, {
     headerParam: {
@@ -23,7 +26,7 @@ test("Validate headers works", (c) => {
   c.deepEqual(validators.headerParam("123"), { error: "none", data: "123" });
   c.like(validators.headerParam(undefined), {
     error: "error",
-    errorInfo: 'Header "headerParam" is mandatory.',
+    errorInfo: 'Request header "headerParam" is mandatory.',
   });
   c.like(validators.headerParam(123 as any), {
     error: "error",
@@ -46,8 +49,13 @@ test("Validate headers works", (c) => {
 test("Validate responseHeaders works", (c) => {
   c.plan(5);
   const headerParamValue = t.string;
-  const { validators, metadata } = spec.responseHeaders({
-    headerParam: headerParamValue,
+  const { validators, metadata } = spec.responseHeaders<{
+    headerParam: string;
+  }>({
+    headerParam: {
+      required: true,
+      encoder: headerParamValue,
+    },
   });
   c.deepEqual(metadata, {
     headerParam: {
@@ -59,7 +67,7 @@ test("Validate responseHeaders works", (c) => {
   c.deepEqual(validators.headerParam("123"), { error: "none", data: "123" });
   c.like(validators.headerParam(undefined as any), {
     error: "error",
-    errorInfo: 'Header "headerParam" is mandatory.',
+    errorInfo: 'Response header "headerParam" is mandatory.',
   });
   c.like(validators.headerParam(123 as any), {
     error: "error",
@@ -83,9 +91,12 @@ test("Validate string decoding optionality detection", (c) => {
   c.plan(3);
   const headerType = t.string;
   const optionalHeaderType = t.union([headerType, t.undefined]);
-  const { validators, metadata } = spec.requestHeaders({
-    requiredHeader: headerType,
-    optionalHeader: optionalHeaderType,
+  const { validators, metadata } = spec.requestHeaders<{
+    requiredHeader: string;
+    optionalHeader: string | undefined;
+  }>({
+    requiredHeader: { required: true, decoder: headerType },
+    optionalHeader: { required: false, decoder: optionalHeaderType },
   });
   c.deepEqual(metadata, {
     requiredHeader: {
@@ -110,9 +121,12 @@ test("Validate string encoding optionality detection", (c) => {
   c.plan(3);
   const headerType = t.string;
   const optionalHeaderType = t.union([headerType, t.undefined]);
-  const { validators, metadata } = spec.responseHeaders({
-    requiredHeader: headerType,
-    optionalHeader: optionalHeaderType,
+  const { validators, metadata } = spec.responseHeaders<{
+    requiredHeader: string;
+    optionalHeader: string | undefined;
+  }>({
+    requiredHeader: { required: true, encoder: headerType },
+    optionalHeader: { required: false, encoder: optionalHeaderType },
   });
   c.deepEqual(metadata, {
     requiredHeader: {

@@ -3,10 +3,9 @@
  */
 
 import * as dataBE from "@ty-ras/data-backend";
-import * as spec from "@ty-ras/endpoint-spec";
 import * as common from "@ty-ras/data-io-ts";
-import * as stringDecoder from "./string-decoder";
-import * as t from "io-ts";
+import type * as protocol from "@ty-ras/protocol";
+import * as s from "./string";
 
 /**
  * Creates a new generic {@link spec.URLParameterInfo} for one URL path-encoded parameter, to be used when defining the URL path pattern for BE endpoint.
@@ -15,25 +14,26 @@ import * as t from "io-ts";
  * @param regExp The optional RegExp to use. If not specified, the value of {@link dataBE.defaultParameterRegExp} will be used.
  * @returns A new generic {@link spec.URLParameterInfo} to be passed to TyRAS functions.
  */
-export const urlParameter = <TName extends string, TDecoder extends t.Mixed>(
+export const urlParameter = <TName extends string, TRuntime>(
   name: TName,
-  decoder: TDecoder,
+  decoder: common.Decoder<TRuntime>,
   regExp?: RegExp,
-): spec.URLParameterInfo<TName, t.TypeOf<TDecoder>, TDecoder> => ({
-  name,
-  regExp: regExp ?? dataBE.defaultParameterRegExp(),
-  decoder,
-  validator: common.fromDecoder(decoder),
-});
+) =>
+  dataBE.urlParameterGeneric<TName, TRuntime, common.ValidatorHKT>(
+    name,
+    decoder,
+    regExp,
+    common.fromDecoder,
+  );
 
 /**
  * Creates a new generic {@link dataBE.QueryValidatorSpec} for all query parameters from named native {@link common.Decoder}s.
  * @param validation The named native {@link common.Decoder}s.
  * @returns A new generic {@link dataBE.QueryValidatorSpec} for all query parameters
  */
-export const query = <TValidation extends stringDecoder.TDecoderBase>(
-  validation: TValidation,
-): dataBE.QueryValidatorSpec<
-  stringDecoder.GetDecoderData<TValidation>,
-  common.Decoder<unknown>
-> => stringDecoder.stringDecoder(validation, "Query parameter");
+export const query = <TQueryData extends protocol.TQueryDataBase>(
+  validation: dataBE.QueryDataValidatorSpecMetadata<
+    TQueryData,
+    common.ValidatorHKT
+  >,
+) => s.stringDecoder<TQueryData>(validation, "Query parameter");
