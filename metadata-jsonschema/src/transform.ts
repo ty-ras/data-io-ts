@@ -2,10 +2,11 @@
  * @file This file contains code related to transforming `io-ts` validators to JSON schema objects.
  */
 
+import type * as data from "@ty-ras/data-io-ts";
+import * as common from "@ty-ras/metadata-jsonschema";
 import { function as F, readonlyArray as RA, eq as EQ } from "fp-ts";
 import * as t from "io-ts";
 import * as tt from "io-ts-types";
-import * as common from "@ty-ras/metadata-jsonschema";
 import type * as types from "./md.types";
 
 /**
@@ -17,13 +18,13 @@ import type * as types from "./md.types";
  * @returns The {@link common.JSONSchema}
  */
 export const transformToJSONSchema = (
-  validation: types.AnyEncoder | types.AnyDecoder,
+  validation: data.AnyEncoder | data.AnyDecoder,
   cutOffTopLevelUndefined: boolean,
   override: types.Override | undefined,
   fallbackValue: types.FallbackValue,
 ): common.JSONSchema => {
   const recursion: Recursion = (
-    innerValidation: types.AnyEncoder | types.AnyDecoder,
+    innerValidation: data.AnyEncoder | data.AnyDecoder,
   ) =>
     transformToJSONSchemaImpl(
       false,
@@ -265,9 +266,7 @@ const tryTransformTopLevelSchema = (
     : undefined;
 };
 
-type Recursion = (
-  item: types.AnyEncoder | types.AnyDecoder,
-) => common.JSONSchema;
+type Recursion = (item: data.AnyEncoder | data.AnyDecoder) => common.JSONSchema;
 
 const transformKeyOf = (
   keysObject: Record<string, unknown>,

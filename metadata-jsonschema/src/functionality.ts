@@ -2,9 +2,9 @@
  * @file This file contains function to invoke {@link common.createJsonSchemaFunctionalityGeneric} using `io-ts` lib-specific functionality (and leaving the rest to be specified as parameters.).
  */
 
+import type * as data from "@ty-ras/data-io-ts";
 import * as common from "@ty-ras/metadata-jsonschema";
 import * as t from "io-ts";
-import type * as types from "./md.types";
 import * as convert from "./transform";
 
 /**
@@ -14,24 +14,33 @@ import * as convert from "./transform";
  * @param param0.contentTypes Privately deconstructed variable.
  * @param param0.override Privately deconstructed variable.
  * @param param0.fallbackValue Privately deconstructed variable.
+ * @param param0.requestBodyContentTypes Privately deconstructed variable.
+ * @param param0.responseBodyContentTypes Privately deconstructed variable.
  * @returns The {@link JSONSchemaFunctionality} that can be used when creating metadata providers.
  */
 export const createJsonSchemaFunctionality = <
   TTransformedSchema,
-  TContentTypes extends string,
+  TRequestBodyContentTypes extends string,
+  TResponseBodyContentTypes extends string,
 >({
-  contentTypes,
+  requestBodyContentTypes,
+  responseBodyContentTypes,
   override,
   fallbackValue,
   ...args
-}: Input<TTransformedSchema, TContentTypes>): JSONSchemaFunctionality<
+}: Input<
   TTransformedSchema,
-  TContentTypes
+  TRequestBodyContentTypes,
+  TResponseBodyContentTypes
+>): JSONSchemaFunctionality<
+  TTransformedSchema,
+  TRequestBodyContentTypes,
+  TResponseBodyContentTypes
 > =>
   common.createJsonSchemaFunctionalityGeneric({
     ...args,
     stringDecoder: {
-      transform: (decoder: types.AnyDecoder, cutOffTopLevelUndefined) =>
+      transform: (decoder: data.AnyDecoder, cutOffTopLevelUndefined) =>
         convert.transformToJSONSchema(
           decoder,
           cutOffTopLevelUndefined,
@@ -41,7 +50,7 @@ export const createJsonSchemaFunctionality = <
       override,
     },
     stringEncoder: {
-      transform: (encoder: types.AnyEncoder, cutOffTopLevelUndefined) =>
+      transform: (encoder: data.AnyEncoder, cutOffTopLevelUndefined) =>
         convert.transformToJSONSchema(
           encoder,
           cutOffTopLevelUndefined,
@@ -51,8 +60,8 @@ export const createJsonSchemaFunctionality = <
       override,
     },
     encoders: common.arrayToRecord(
-      [...contentTypes],
-      (): common.SchemaTransformation<types.AnyEncoder> => ({
+      [...responseBodyContentTypes],
+      (): common.SchemaTransformation<data.AnyEncoder> => ({
         transform: (validation, cutOffTopLevelUndefined) =>
           convert.transformToJSONSchema(
             validation,
@@ -64,8 +73,8 @@ export const createJsonSchemaFunctionality = <
       }),
     ),
     decoders: common.arrayToRecord(
-      [...contentTypes],
-      (): common.SchemaTransformation<types.AnyDecoder> => ({
+      [...requestBodyContentTypes],
+      (): common.SchemaTransformation<data.AnyDecoder> => ({
         transform: (validation, cutOffTopLevelUndefined) =>
           convert.transformToJSONSchema(
             validation,
@@ -82,16 +91,22 @@ export const createJsonSchemaFunctionality = <
 /**
  * This interface extends {@link common.JSONSchemaFunctionalityCreationArgumentsContentTypes}, and acts as input to {@link createJsonSchemaFunctionality} function.
  */
-export interface Input<TTransformedSchema, TContentTypes extends string>
-  extends common.JSONSchemaFunctionalityCreationArgumentsContentTypes<
+export interface Input<
+  TTransformedSchema,
+  TRequestBodyContentTypes extends string,
+  TResponseBodyContentTypes extends string,
+> extends common.JSONSchemaFunctionalityCreationArgumentsContentTypes<
     TTransformedSchema,
-    TContentTypes,
-    types.AnyEncoder | types.AnyDecoder
+    TRequestBodyContentTypes,
+    TResponseBodyContentTypes,
+    data.AnyEncoder | data.AnyDecoder
   > {
   /**
    * Optional callback to override certain encoders or decoders, as needed.
    */
-  override?: common.OverrideGeneric<types.AnyEncoder | types.AnyDecoder>;
+  override?:
+    | common.OverrideGeneric<data.AnyEncoder | data.AnyDecoder>
+    | undefined;
 }
 
 /**
@@ -100,17 +115,17 @@ export interface Input<TTransformedSchema, TContentTypes extends string>
  */
 export type JSONSchemaFunctionality<
   TTransformedSchema,
-  TContentTypes extends string,
+  TRequestBodyContentTypes extends string,
+  TResponseBodyContentTypes extends string,
 > = common.SupportedJSONSchemaFunctionality<
   TTransformedSchema,
-  types.AnyDecoder,
-  types.AnyEncoder,
-  Record<TContentTypes, common.SchemaTransformation<types.AnyEncoder>>,
-  Record<TContentTypes, common.SchemaTransformation<types.AnyDecoder>>
+  data.ValidatorHKT,
+  TRequestBodyContentTypes,
+  TResponseBodyContentTypes
 >;
 
 const getUndefinedPossibility: common.GetUndefinedPossibility<
-  types.AnyEncoder | types.AnyDecoder
+  data.AnyEncoder | data.AnyDecoder
 > = (validation) =>
   validation instanceof t.Type && validation.is(undefined)
     ? validation === t.undefined
@@ -124,8 +139,8 @@ const getUndefinedPossibility: common.GetUndefinedPossibility<
 //   TInputContents extends common.TContentsBase,
 // > = common.JSONSchemaFunctionalityCreationArgumentsGeneric<
 //   TTransformedSchema,
-//   types.AnyDecoder,
-//   types.AnyEncoder,
+//   data.AnyDecoder,
+//   data.AnyEncoder,
 //   TOutputContents,
 //   TInputContents
 // >;

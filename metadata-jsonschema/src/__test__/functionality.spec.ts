@@ -4,15 +4,16 @@
 
 import test, { ExecutionContext } from "ava";
 import * as spec from "../functionality";
-import type * as types from "../md.types";
 import * as common from "@ty-ras/metadata-jsonschema";
+import type * as data from "@ty-ras/data-io-ts";
 import * as t from "io-ts";
 
 test("Validate createJsonSchemaFunctionality works for non-schema-transformation things", (c) => {
   c.plan(5);
   const { decoders, encoders, getUndefinedPossibility } =
     spec.createJsonSchemaFunctionality({
-      contentTypes,
+      requestBodyContentTypes: contentTypes,
+      responseBodyContentTypes: contentTypes,
       transformSchema: (schema) => schema,
     });
 
@@ -40,15 +41,16 @@ const testDecodersAndEncoders = (
     plan += 2;
   }
   c.plan(plan);
-  const seenOverrideArgs: Array<types.AnyEncoder | types.AnyDecoder> = [];
-  const seenFallbackArgs: Array<types.AnyEncoder | types.AnyDecoder> = [];
+  const seenOverrideArgs: Array<data.AnyEncoder | data.AnyDecoder> = [];
+  const seenFallbackArgs: Array<data.AnyEncoder | data.AnyDecoder> = [];
   const {
     stringDecoder,
     stringEncoder,
     decoders: { [contentType]: decoder },
     encoders: { [contentType]: encoder },
   } = spec.createJsonSchemaFunctionality({
-    contentTypes,
+    requestBodyContentTypes: contentTypes,
+    responseBodyContentTypes: contentTypes,
     transformSchema: (schema) => schema,
     override:
       override !== undefined
