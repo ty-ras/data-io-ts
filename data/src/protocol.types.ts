@@ -39,10 +39,10 @@ export type GetEncodedObject<T> = {
 export type GetEncodedArray<T> = Array<GetEncoded<T>>;
 
 /**
- * This type materializes the [higher-kinded type](https://www.matechs.com/blog/encoding-hkts-in-typescript-once-again) defined in TyRAS {@link protocol.HKTEncodedBase}.
+ * This type materializes the [higher-kinded type](https://www.matechs.com/blog/encoding-hkts-in-typescript-once-again) defined in TyRAS {@link protocol.EncodedHKTBase}.
  * It uses {@link GetEncoded} to provide the actual logic of extracting encoded type.
  */
-export interface HKTEncoded extends protocol.HKTEncodedBase {
+export interface EncodedHKT extends protocol.EncodedHKTBase {
   /**
    * This property will be used to construct the final serialized ("encoded") type of some type defined in protocol specification.
    */
