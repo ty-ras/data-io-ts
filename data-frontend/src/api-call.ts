@@ -13,10 +13,10 @@ import type * as data from "@ty-ras/data-io-ts";
  */
 export const createAPICallFactoryWithCallback = (
   callHttpEndpoint: dataFE.CallHTTPEndpoint,
-) => dataFE.createAPICallFactoryGeneric<data.HKTEncoded>(callHttpEndpoint);
+) => dataFE.createAPICallFactoryGeneric<data.EncodedHKT>(callHttpEndpoint);
 
 /**
  * This type specializes the {@link dataFE.APICallFactoryBase} to use the {@link data.HKTEncoded} as its first generic argument.
  */
 export type APICallFactory<THeaderFunctionalityNames extends string = "auth"> =
-  dataFE.APICallFactoryBase<data.HKTEncoded, THeaderFunctionalityNames>;
+  dataFE.APICallFactoryBase<data.EncodedHKT, THeaderFunctionalityNames>;

@@ -1,5 +1,5 @@
 {
-  "name": "@ty-ras/metadata-jsonschema-io-ts",
+  "name": "@ty-ras/state-io-ts",
   "version": "2.0.0",
   "author": {
     "name": "Stanislav Muhametsin",
@@ -32,12 +32,7 @@
   },
   "dependencies": {
     "@ty-ras/data-io-ts": "^2.0.0",
-    "@ty-ras/metadata-jsonschema": "^2.0.0"
-  },
-  "peerDependencies": {
-    "io-ts-types": "^0.5.17",
-    "monocle-ts": "^2.3.13",
-    "newtype-ts": "^0.3.5"
+    "@ty-ras/state": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.21.5",
@@ -56,10 +51,7 @@
     "eslint-plugin-sonarjs": "0.19.0",
     "fp-ts": "2.12.3",
     "io-ts": "2.2.19",
-    "io-ts-types": "0.5.17",
     "madge": "6.1.0",
-    "monocle-ts": "2.3.13",
-    "newtype-ts": "0.3.5",
     "prettier": "2.8.8",
     "ts-node": "10.9.1",
     "typescript": "5.0.4"

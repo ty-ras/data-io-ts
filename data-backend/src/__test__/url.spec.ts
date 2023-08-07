@@ -6,14 +6,13 @@
 import test from "ava";
 import * as spec from "../url";
 import * as t from "io-ts";
-import * as dataBE from "@ty-ras/data-backend";
 import * as data from "@ty-ras/data";
 
 test("Validate query works", (c) => {
   c.plan(5);
   const queryParamValue = t.string;
-  const { validators, metadata } = spec.query({
-    queryParam: queryParamValue,
+  const { validators, metadata } = spec.query<{ queryParam: string }>({
+    queryParam: { required: true, decoder: queryParamValue },
   });
   c.deepEqual(metadata, {
     queryParam: {
@@ -64,7 +63,7 @@ test("Validate urlParameter works", (c) => {
   c.deepEqual(data.omit(defaultRegExp, "validator"), {
     name: "urlParamDefaultRegExp",
     decoder: urlParamDefaultRegExp,
-    regExp: dataBE.defaultParameterRegExp(),
+    regExp: data.defaultParameterRegExp(),
   });
   c.deepEqual(data.omit(customRegExp, "validator"), {
     name: "urlParamCustomRegExp",

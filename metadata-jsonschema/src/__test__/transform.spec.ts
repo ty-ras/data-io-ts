@@ -5,8 +5,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
 import test, { ExecutionContext } from "ava";
 import * as spec from "../transform";
-import type * as types from "../md.types";
 import type * as common from "@ty-ras/metadata-jsonschema";
+import type * as data from "@ty-ras/data-io-ts";
 // import * as data from "@ty-ras/data-io-ts";
 import * as t from "io-ts";
 import * as tt from "io-ts-types";
@@ -288,7 +288,7 @@ test("Validate that transformToJSONSchema works with union of unions", (c) => {
 
 const simpleTransformToJSONSchema = (
   c: ExecutionContext,
-  validation: types.AnyDecoder | types.AnyEncoder,
+  validation: data.AnyDecoder | data.AnyEncoder,
   type: Exclude<common.JSONSchema, boolean>["type"],
   description?: string,
 ) =>
@@ -298,5 +298,5 @@ const simpleTransformToJSONSchema = (
   });
 
 const rawTransformToJSONSchema = (
-  validation: types.AnyDecoder | types.AnyEncoder,
+  validation: data.AnyDecoder | data.AnyEncoder,
 ) => spec.transformToJSONSchema(validation, true, undefined, () => undefined);
