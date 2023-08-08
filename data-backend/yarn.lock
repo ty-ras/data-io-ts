@@ -393,10 +393,10 @@
     "@ty-ras/data" "^2.1.0"
     raw-body "^2.5.2"
 
-"@ty-ras/data-io-ts@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ty-ras/data-io-ts/-/data-io-ts-2.0.0.tgz#7fc726759b04983122cee45782bfabec48071621"
-  integrity sha512-cAAYHzMOot1Uy1jB2XF5VUI5wBAjYqgaSLF9px3c+Il0vhr6zWWfUYpkN9L55u4vOHyZ8FCqE4/Cyza6zWHYnQ==
+"@ty-ras/data-io-ts@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ty-ras/data-io-ts/-/data-io-ts-2.0.1.tgz#d4be12b7dfd748bce85b02418fa4a54c0b441dbb"
+  integrity sha512-n96FSLbflik0xQrH7gxR68jvfA8m8hR1tH2OfjQlWM+TBvSW1soryFt59hPKuSMf+eNul/Lvw5nWX+IvwW2+HA==
   dependencies:
     "@ty-ras/data" "^2.1.0"
 
