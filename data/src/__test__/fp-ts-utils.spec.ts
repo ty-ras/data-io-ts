@@ -10,12 +10,12 @@ import * as spec from "../fp-ts-utils";
 import * as t from "io-ts";
 import { either as E } from "fp-ts";
 
-test("Validate that toError works correctly", (c) => {
+test("Validate that toErrorClass works correctly", (c) => {
   c.plan(2);
   const errorObject = new Error();
   const iotsError: t.Errors = [];
-  c.is(spec.toError(errorObject), errorObject);
-  c.true(spec.toError(iotsError) instanceof Error);
+  c.is(spec.toErrorClass(errorObject), errorObject);
+  c.true(spec.toErrorClass(iotsError) instanceof Error);
 });
 
 test("Validate that throwIfError works correctly", (c) => {
