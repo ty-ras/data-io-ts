@@ -11,7 +11,7 @@ import { function as F, either as E } from "fp-ts";
  * @param error The error.
  * @returns The {@link Error}.
  */
-export const toError = (error: Error | t.Errors): Error =>
+export const toErrorClass = (error: Error | t.Errors): Error =>
   error instanceof Error
     ? error
     : new Error(errorFunctionality.getHumanReadableErrorMessage(error));
@@ -40,4 +40,4 @@ export const throwOnError = (error: Error): never => {
 /**
  * Helper method to chain {@link E.getOrElseW} and {@link throwIfError} via {@link F.flow}.
  */
-export const getOrElseThrow = F.flow(E.getOrElseW(toError), throwIfError);
+export const getOrElseThrow = F.flow(E.getOrElseW(toErrorClass), throwIfError);
