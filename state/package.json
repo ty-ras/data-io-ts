@@ -1,6 +1,6 @@
 {
   "name": "@ty-ras/state-io-ts",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": {
     "name": "Stanislav Muhametsin",
     "email": "346799+stazz@users.noreply.github.com",
@@ -31,7 +31,7 @@
     }
   },
   "dependencies": {
-    "@ty-ras/data-io-ts": "^2.0.0",
+    "@ty-ras/data-io-ts": "^2.0.1",
     "@ty-ras/state": "^2.0.0"
   },
   "devDependencies": {
