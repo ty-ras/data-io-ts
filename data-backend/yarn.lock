@@ -407,26 +407,6 @@
   dependencies:
     "@ty-ras/protocol" "^2.0.0"
 
-"@ty-ras/endpoint-spec@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ty-ras/endpoint-spec/-/endpoint-spec-2.0.0.tgz#c1eb0ea0a1a8a882d2b57d2a549a2b98a89a9917"
-  integrity sha512-djk86KeWjGwApNgPKT7dOkGy7v62d9PVYm5O8UOqdZh+mFVMgKxqryw9x9bC3Vw/kOaQZG/kX4azlVQyfV09JQ==
-  dependencies:
-    "@ty-ras/endpoint" "^2.0.0"
-    "@ty-ras/metadata" "^2.0.0"
-
-"@ty-ras/endpoint@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ty-ras/endpoint/-/endpoint-2.0.0.tgz#f6bfc9d0c126f2d1e9b063c7e6ebad385411f214"
-  integrity sha512-eZBDWW15HoTQ/jWR9s7/uCTwU77rC3JF/fGvEaPCCMZDE4ODaxaDt25uFYWsi/aOm72xe5YnsS6pFNtjpElchA==
-  dependencies:
-    "@ty-ras/data-backend" "^2.0.0"
-
-"@ty-ras/metadata@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ty-ras/metadata/-/metadata-2.0.0.tgz#69115f6b1f2846781cec486b2b18914ea6baac24"
-  integrity sha512-04zVDoHmBnDeaGDrcirvCPC3XZfgooO3EZoZfYj5bMcICnijMEtz133EEr8qcejxw8qGLozDXIQseaywpPtEkg==
-
 "@ty-ras/protocol@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@ty-ras/protocol/-/protocol-2.0.0.tgz#2cba0ceb6f891228bed881eadb3e17812152c632"
